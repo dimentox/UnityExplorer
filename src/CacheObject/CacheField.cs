@@ -11,6 +11,8 @@ namespace UnityExplorer.CacheObject
         private bool? m_canWrite;
 
         public override bool ShouldAutoEvaluate => true;
+        public override bool RefreshFromSource => FieldInfo.FieldType.IsValueType;
+
 
         public CacheField(FieldInfo fi)
         {
@@ -22,7 +24,7 @@ namespace UnityExplorer.CacheObject
             base.SetInspectorOwner(inspector, member);
         }
 
-        protected override object TryEvaluate()
+        public override object TryEvaluate()
         {
             try
             {

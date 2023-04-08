@@ -1,0 +1,136 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+        <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+        <ProjectGuid>{059CD83D-15DA-40DB-9402-372601D61878}</ProjectGuid>
+        <OutputType>Library</OutputType>
+        <AppDesignerFolder>Properties</AppDesignerFolder>
+        <RootNamespace>ECSExtension</RootNamespace>
+        <AssemblyName>ECSExtension</AssemblyName>
+        <TargetFramework>net6</TargetFramework>
+        <Configurations>BIE_Cpp_CoreCLR</Configurations>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    </PropertyGroup>
+    <!-- BEPINEX IL2CPP CoreCLR -->
+    <PropertyGroup>
+        <TargetFramework>net6</TargetFramework>
+        <OutputPath>..\Release\ECSExtension\</OutputPath>
+        <DefineConstants>CPP,BIE,BIE6,INTEROP</DefineConstants>
+        <AssemblyName>ECSExtension</AssemblyName>
+    </PropertyGroup>
+    <!-- net6 -->
+    <ItemGroup>
+        <Reference Include="mcs">
+            <HintPath>..\lib\net6\mcs.dll</HintPath>
+            <Private>True</Private>
+        </Reference>
+        <Reference Include="Unity.Burst">
+          <HintPath>..\lib\interop\ECS\Unity.Burst.dll</HintPath>
+        </Reference>
+        <Reference Include="Unity.Burst.Unsafe">
+          <HintPath>..\lib\interop\ECS\Unity.Burst.Unsafe.dll</HintPath>
+        </Reference>
+        <Reference Include="Unity.Collections">
+          <HintPath>..\lib\interop\ECS\Unity.Collections.dll</HintPath>
+        </Reference>
+        <Reference Include="Unity.Collections.LowLevel.ILSupport">
+          <HintPath>..\lib\interop\ECS\Unity.Collections.LowLevel.ILSupport.dll</HintPath>
+        </Reference>
+        <Reference Include="Unity.Entities">
+          <HintPath>..\lib\interop\ECS\Unity.Entities.dll</HintPath>
+        </Reference>
+        <Reference Include="Unity.Entities.Hybrid">
+          <HintPath>..\lib\interop\ECS\Unity.Entities.Hybrid.dll</HintPath>
+        </Reference>
+        <Reference Include="Unity.Entities.Hybrid.HybridComponents">
+          <HintPath>..\lib\interop\ECS\Unity.Entities.Hybrid.HybridComponents.dll</HintPath>
+        </Reference>
+        <Reference Include="Unity.Mathematics">
+          <HintPath>..\lib\interop\ECS\Unity.Mathematics.dll</HintPath>
+        </Reference>
+        <Reference Include="Unity.Mathematics.Extensions">
+          <HintPath>..\lib\interop\ECS\Unity.Mathematics.Extensions.dll</HintPath>
+        </Reference>
+        <Reference Include="Unity.NetCode">
+          <HintPath>..\lib\interop\ECS\Unity.NetCode.dll</HintPath>
+        </Reference>
+        <Reference Include="Unity.NetCode.Authoring.Hybrid">
+          <HintPath>..\lib\interop\ECS\Unity.NetCode.Authoring.Hybrid.dll</HintPath>
+        </Reference>
+        <Reference Include="Unity.NetCode.Physics">
+          <HintPath>..\lib\interop\ECS\Unity.NetCode.Physics.dll</HintPath>
+        </Reference>
+        <Reference Include="Unity.Networking.Transport">
+          <HintPath>..\lib\interop\ECS\Unity.Networking.Transport.dll</HintPath>
+        </Reference>
+        <Reference Include="Unity.Physics">
+          <HintPath>..\lib\interop\ECS\Unity.Physics.dll</HintPath>
+        </Reference>
+        <Reference Include="Unity.Physics.Hybrid">
+          <HintPath>..\lib\interop\ECS\Unity.Physics.Hybrid.dll</HintPath>
+        </Reference>
+        <Reference Include="UniverseLib.IL2CPP.Interop">
+            <HintPath>..\lib\net6\UniverseLib.IL2CPP.Interop.dll</HintPath>
+            <Private>true</Private>
+        </Reference>
+    </ItemGroup>
+
+    <!-- Il2Cpp Interop -->
+    <ItemGroup>
+        <Reference Include="Il2Cppmscorlib">
+            <HintPath>..\lib\interop\Il2Cppmscorlib.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
+        <Reference Include="Il2CppSystem.Core">
+            <HintPath>..\lib\interop\Il2CppSystem.Core.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
+        <Reference Include="UnityEngine">
+            <HintPath>..\lib\interop\UnityEngine.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
+        <Reference Include="UnityEngine.AudioModule">
+            <HintPath>..\lib\interop\UnityEngine.AudioModule.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
+        <Reference Include="UnityEngine.CoreModule">
+            <HintPath>..\lib\interop\UnityEngine.CoreModule.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
+        <Reference Include="UnityEngine.PhysicsModule">
+            <HintPath>..\lib\interop\UnityEngine.PhysicsModule.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
+        <Reference Include="UnityEngine.TextRenderingModule">
+            <HintPath>..\lib\interop\UnityEngine.TextRenderingModule.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
+        <Reference Include="UnityEngine.UI">
+            <HintPath>..\lib\interop\UnityEngine.UI.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
+        <Reference Include="UnityEngine.UIModule">
+            <HintPath>..\lib\interop\UnityEngine.UIModule.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
+        <Reference Include="UnityEngine.IMGUIModule">
+            <HintPath>..\lib\interop\UnityEngine.IMGUIModule.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="BepInEx.Core" Version="6.0.0-be*" PrivateAssets="all" />
+        <PackageReference Include="BepInEx.Unity.IL2CPP" Version="6.0.0-be*" PrivateAssets="all" />
+        <PackageReference Include="Il2CppInterop.Common" Version="1.5.0-dots" />
+        <PackageReference Include="Il2CppInterop.Runtime" Version="1.5.0-dots" />
+
+        <Reference Include="..\lib\interop\CoreLib.dll" Private="false" SpecificVersion="true" />
+        
+    </ItemGroup>
+    
+    <ItemGroup>
+      <ProjectReference Include="..\src\UnityExplorer.csproj" />
+    </ItemGroup>
+
+</Project>

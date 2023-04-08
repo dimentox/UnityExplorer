@@ -1,10 +1,9 @@
+using HarmonyLib;
 using UnityExplorer.CacheObject;
 using UnityExplorer.Inspectors;
 using UnityExplorer.UI;
 using UnityExplorer.UI.Panels;
 using UniverseLib.UI.ObjectPool;
-using UniverseLib.Utility;
-using Object = Il2CppSystem.Object;
 
 namespace UnityExplorer
 {
@@ -26,7 +25,7 @@ namespace UnityExplorer
             Inspect(obj, parent, true);
         }
         
-        public static void Inspect(object obj, CacheObjectBase sourceCache, bool useCustomInspectors)
+        public static void Inspect(object obj, CacheObjectBase parent, bool useCustomInspectors)
         {
             if (obj.IsNullOrDestroyed())
                 return;
@@ -124,6 +123,7 @@ namespace UnityExplorer
 
         static void CreateInspector<T>(object target, bool staticReflection = false, CacheObjectBase parent = null) where T : InspectorBase
         {
+            Debug.Log($"Create inspector, type: {typeof(T)}");
             T inspector = Pool<T>.Borrow();
             Inspectors.Add(inspector);
             inspector.Target = target;

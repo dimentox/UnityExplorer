@@ -65,6 +65,8 @@ namespace UnityExplorer.UI
             }
         }
 
+        public static event Action onInit;
+
         // Initialization
 
         internal static void InitUI()
@@ -110,6 +112,8 @@ namespace UnityExplorer.UI
 
             if (ConfigManager.Hide_On_Startup.Value)
                 ShowMenu = false;
+            
+            onInit?.Invoke();
         }
 
         // Main UI Update loop

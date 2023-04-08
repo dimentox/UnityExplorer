@@ -48,6 +48,8 @@ namespace UnityExplorer.CacheObject
         public abstract bool HasArguments { get; }
         public abstract bool CanWrite { get; }
 
+        public abstract bool RefreshFromSource { get; }
+
         protected const string NOT_YET_EVAL = "<color=grey>Not yet evaluated</color>";
 
         public virtual void SetFallbackType(Type fallbackType)
@@ -120,6 +122,8 @@ namespace UnityExplorer.CacheObject
         }
 
         public abstract void TrySetUserValue(object value);
+        
+        public abstract object TryEvaluate();
 
         protected virtual void ProcessOnEvaluate()
         {

@@ -1,6 +1,7 @@
 ﻿using UnityExplorer.ObjectExplorer;
 using UniverseLib.UI;
 using UniverseLib.UI.Models;
+using Object = UnityEngine.Object;
 
 namespace UnityExplorer.UI.Panels
 {
@@ -14,18 +15,40 @@ namespace UnityExplorer.UI.Panels
         public override Vector2 DefaultAnchorMin => new(0.125f, 0.175f);
         public override Vector2 DefaultAnchorMax => new(0.325f, 0.925f);
 
-        public SceneExplorer SceneExplorer;
-        public ObjectSearch ObjectSearch;
+        public SceneExplorer SceneExplorer => tabPages[0] as SceneExplorer;
 
         public override bool ShowByDefault => true;
         public override bool ShouldSaveActiveState => true;
 
         public int SelectedTab = 0;
-        private readonly List<UIModel> tabPages = new();
+        private readonly List<UITabPanel> tabPages = new();
         private readonly List<ButtonRef> tabButtons = new();
+        private GameObject tabGroup;
 
-        public ObjectExplorerPanel(UIBase owner) : base(owner)
+        public ObjectExplorerPanel(UIBase owner) : base(owner) { }
+
+        public void AddTab(UITabPanel tab)
         {
+            tab.ConstructUI(ContentRoot);
+            tabPages.Add(tab);
+            AddTabButton(tab.Name);
+        }
+
+        public void RemoveTab(Type tabType)
+        {
+            int index = tabPages.FindIndex(panel => panel.GetType() == tabType);
+            if (index < 0) return;
+
+            UITabPanel panel = tabPages[index];
+            RemoveTabButton(index);
+            tabPages.RemoveAt(index);
+            Object.Destroy(panel.UIRoot);
+            if (SelectedTab == index)
+            {
+                SelectedTab = -1;
+                if (tabPages.Count - 1 >= 0)
+                    SetTab(tabPages.Count - 1);
+            }
         }
 
         public void SetTab(int tabIndex)
@@ -51,10 +74,10 @@ namespace UnityExplorer.UI.Panels
 
         public override void Update()
         {
-            if (SelectedTab == 0)
-                SceneExplorer.Update();
-            else
-                ObjectSearch.Update();
+            if (SelectedTab >= 0 && SelectedTab < tabPages.Count)
+            {
+                tabPages[SelectedTab].Update();
+            }
         }
 
         public override string ToSaveData()
@@ -85,28 +108,17 @@ namespace UnityExplorer.UI.Panels
         protected override void ConstructPanelContent()
         {
             // Tab bar
-            GameObject tabGroup = UIFactory.CreateHorizontalGroup(ContentRoot, "TabBar", true, true, true, true, 2, new Vector4(2, 2, 2, 2));
+            tabGroup = UIFactory.CreateHorizontalGroup(ContentRoot, "TabBar", true, true, true, true, 2, new Vector4(2, 2, 2, 2));
             UIFactory.SetLayoutElement(tabGroup, minHeight: 25, flexibleHeight: 0);
 
-            // Scene Explorer
-            SceneExplorer = new SceneExplorer(this);
-            SceneExplorer.ConstructUI(ContentRoot);
-            tabPages.Add(SceneExplorer);
-
-            // Object search
-            ObjectSearch = new ObjectSearch(this);
-            ObjectSearch.ConstructUI(ContentRoot);
-            tabPages.Add(ObjectSearch);
-
-            // set up tabs
-            AddTabButton(tabGroup, "Scene Explorer");
-            AddTabButton(tabGroup, "Object Search");
+            AddTab(new SceneExplorer(this));
+            AddTab(new ObjectSearch(this));
 
             // default active state: Active
             this.SetActive(true);
         }
 
-        private void AddTabButton(GameObject tabGroup, string label)
+        private void AddTabButton(string label)
         {
             ButtonRef button = UIFactory.CreateButton(tabGroup, $"Button_{label}", label);
 
@@ -117,6 +129,16 @@ namespace UnityExplorer.UI.Panels
             tabButtons.Add(button);
 
             DisableTab(tabButtons.Count - 1);
+        }
+
+        private void RemoveTabButton(int index)
+        {
+            if (index >= 0 && index < tabButtons.Count)
+            {
+                ButtonRef button = tabButtons[index];
+                Object.Destroy(button.GameObject);
+                tabButtons.RemoveAt(index);
+            }
         }
     }
 }

@@ -8,7 +8,7 @@ using UniverseLib.UI.Widgets;
 
 namespace UnityExplorer.ObjectExplorer
 {
-    public class SceneExplorer : UIModel
+    public class SceneExplorer : UITabPanel
     {
         public ObjectExplorerPanel Parent { get; }
 
@@ -42,7 +42,9 @@ namespace UnityExplorer.ObjectExplorer
 
         private IEnumerable<GameObject> GetRootEntries() => SceneHandler.CurrentRootObjects;
 
-        public void Update()
+        public override string Name => "Scene Explorer";
+
+        public override void Update()
         {
             if ((AutoUpdate || !SceneHandler.InspectingAssetScene) && timeOfLastUpdate.OccuredEarlierThan(1))
             {

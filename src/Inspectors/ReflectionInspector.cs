@@ -218,7 +218,7 @@ namespace UnityExplorer.Inspectors
                 if (this.UnityWidget != null)
                     UnityWidget.Update();
 
-                if (AutoUpdateWanted)
+                if (AutoUpdateWanted){}
                     UpdateDisplayedMembers();
             }
         }
@@ -270,12 +270,20 @@ namespace UnityExplorer.Inspectors
 
         void UpdateDisplayedMembers()
         {
+            if (ParentCacheObject != null && ParentCacheObject.RefreshFromSource)
+            {
+                Target = ParentCacheObject.TryEvaluate();
+            }
+            
             bool shouldRefresh = false;
             foreach (CacheMemberCell cell in MemberScrollPool.CellPool)
             {
                 if (!cell.Enabled || cell.Occupant == null)
                     continue;
                 CacheMember member = cell.MemberOccupant;
+                if (ParentCacheObject != null && ParentCacheObject.RefreshFromSource)
+                    member.UpdateDeclaringInstance();
+                
                 if (member.ShouldAutoEvaluate)
                 {
                     shouldRefresh = true;

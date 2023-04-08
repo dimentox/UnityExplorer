@@ -10,6 +10,8 @@ namespace UnityExplorer.CacheObject
         public override bool IsStatic => MethodInfo.IsStatic;
 
         public override bool ShouldAutoEvaluate => false;
+        public override bool RefreshFromSource => false;
+
 
         public CacheMethod(MethodInfo mi)
         {
@@ -25,7 +27,7 @@ namespace UnityExplorer.CacheObject
                 GenericArguments = MethodInfo.GetGenericArguments();
         }
 
-        protected override object TryEvaluate()
+        public override object TryEvaluate()
         {
             try
             {

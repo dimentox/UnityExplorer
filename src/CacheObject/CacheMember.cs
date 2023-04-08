@@ -33,6 +33,11 @@ namespace UnityExplorer.CacheObject
             this.NameLabelTextRaw = NameForFiltering;
         }
 
+        public void UpdateDeclaringInstance()
+        {
+            m_declaringInstance = Owner.Target.TryCast(DeclaringType);
+        }
+
         public override void ReleasePooledObjects()
         {
             base.ReleasePooledObjects();
@@ -52,8 +57,6 @@ namespace UnityExplorer.CacheObject
 
             base.UnlinkFromView();
         }
-
-        protected abstract object TryEvaluate();
 
         protected abstract void TrySetValue(object value);
 

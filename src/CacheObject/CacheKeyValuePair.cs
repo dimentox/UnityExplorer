@@ -23,6 +23,8 @@ namespace UnityExplorer.CacheObject
         public override bool ShouldAutoEvaluate => true;
         public override bool HasArguments => false;
         public override bool CanWrite => Owner.CanWrite;
+        public override bool RefreshFromSource => false;
+
 
         public void SetDictOwner(InteractiveDictionary dict, int index)
         {
@@ -84,6 +86,11 @@ namespace UnityExplorer.CacheObject
         public override void TrySetUserValue(object value)
         {
             (Owner as InteractiveDictionary).TrySetValueToKey(DictKey, value, DictIndex);
+        }
+        
+        public override object TryEvaluate()
+        {
+            return null;
         }
 
 
