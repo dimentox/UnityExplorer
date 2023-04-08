@@ -92,14 +92,7 @@ namespace ECSExtension.Panels
         {
             if (world.EntityManager.Exists(entity))
             {
-                if (value)
-                {
-                    world.EntityManager.RemoveComponent(entity, ECSUtil.ReadOnly<Disabled>());
-                }
-                else
-                {
-                    world.EntityManager.AddComponent(entity, ECSUtil.ReadOnly<Disabled>());
-                }
+                world.EntityManager.SetEnabled(entity, value);
             }
         }
 

@@ -33,10 +33,13 @@ namespace ECSExtension.Util
             {
                 return;
             }
-            ComponentType componentType = ComponentType.ReadWrite<Disabled>();
+            ComponentType componentType = ReadOnly<Disabled>();
             if (entityManager.HasModComponent<LinkedEntityGroup>(entity))
             {
-                NativeArray<Entity> entities = Reinterpret<LinkedEntityGroup, Entity>(entityManager.GetBuffer<LinkedEntityGroup>(entity)).ToNativeArray(Allocator.TempJob);
+                NativeArray<Entity> entities = entityManager
+                    .GetModBuffer<LinkedEntityGroup>(entity)
+                    .Reinterpret<LinkedEntityGroup, Entity>()
+                    .ToNativeArray(Allocator.TempJob);
                 if (enabled)
                 {
                     entityManager.RemoveComponent(entities, componentType);
@@ -63,7 +66,7 @@ namespace ECSExtension.Util
             return string.IsNullOrEmpty(name) ? entity.ToString() : name;
         }
         
-        public static unsafe DynamicBuffer<U> Reinterpret<T, U>(DynamicBuffer<T> buffer) 
+        public static unsafe DynamicBuffer<U> Reinterpret<T, U>(this DynamicBuffer<T> buffer) 
             where U : unmanaged
             where T : unmanaged
         {
@@ -75,6 +78,42 @@ namespace ECSExtension.Util
             return !entityManager.HasComponent(entity, ReadOnly<Disabled>());
         }
         
+        /// <summary>
+        /// Gets the dynamic buffer of an entity.
+        /// </summary>
+        /// <param name="entity">The entity.</param>
+        /// <param name="isReadOnly">Specify whether the access to the component through this object is read only
+        /// or read and write. </param>
+        /// <typeparam name="T">The type of the buffer's elements.</typeparam>
+        /// <returns>The DynamicBuffer object for accessing the buffer contents.</returns>
+        /// <exception cref="ArgumentException">Thrown if T is an unsupported type.</exception>
+        public static unsafe DynamicBuffer<T> GetModBuffer<T>(this EntityManager entityManager, Entity entity, bool isReadOnly = false) where T : unmanaged
+        {
+            var typeIndex = GetModTypeIndex<T>();
+            var access = entityManager.GetCheckedEntityDataAccess();
+            
+            if (!access->IsInExclusiveTransaction)
+            {
+                if (isReadOnly)
+                    access->DependencyManager->CompleteWriteDependency(typeIndex);
+                else
+                    access->DependencyManager->CompleteReadAndWriteDependency(typeIndex);
+            }
+
+            BufferHeader* header;
+            if (isReadOnly)
+            {
+                header = (BufferHeader*) access->EntityComponentStore->GetComponentDataWithTypeRO(entity, typeIndex);
+            }
+            else
+            {
+                header = (BufferHeader*) access->EntityComponentStore->GetComponentDataWithTypeRW(entity, typeIndex, access->EntityComponentStore->GlobalSystemVersion);
+            }
+
+            int internalCapacity = TypeManager.GetTypeInfo(typeIndex).BufferCapacity;
+            return new DynamicBuffer<T>(header, internalCapacity);
+        }
+
         public static unsafe T GetModComponentData<T>(this EntityManager entityManager, Entity entity)
         {
             int typeIndex = GetModTypeIndex<T>();

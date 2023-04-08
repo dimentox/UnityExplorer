@@ -32,20 +32,10 @@ namespace ECSExtension
 
         public GameObject Content;
         private ScrollPool<ECSComponentCell> componentScroll;
-        //private ScrollPool<EntityCell> entityScroll;
-        //private EntityList entityList;
         private ECSComponentList ecsComponentList;
         private EntityInfoPanel entityInfoPanel;
         private InputFieldRef addCompInput;
-
-       // public List<Entity> currentPage = new List<Entity>();
-
-        public const int pageLimit = 30;
-        public int pageIndex = 0;
-        public int maxPages;
         
-        
-
         public override GameObject CreateContent(GameObject parent)
         {
             UIRoot = UIFactory.CreateVerticalGroup(parent, "EntityInspector", true, false, true, true, 5,
