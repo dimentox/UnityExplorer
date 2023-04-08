@@ -1,13 +1,11 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using CoreLib.Submodules.ModComponent;
+using ECSExtension.Util;
 using Unity.Collections;
 using Unity.Entities;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityExplorer;
-using UnityExplorer.UI;
 using UnityExplorer.UI.Panels;
 using UniverseLib;
 using UniverseLib.UI;
@@ -60,7 +58,11 @@ namespace ECSExtension.Widgets
                 WorldButton.ButtonText.text = Owner.currentWorld.Name;
             }
 
-            titleLabel.text = Owner.GetEntityName();
+            if (firstUpdate)
+            {
+                titleLabel.text = Owner.GetEntityName();
+                NameInput.Text = GetEntityName();
+            }
 
             if (worldNames == null || firstUpdate)
                 GetWorldNames();
@@ -94,47 +96,10 @@ namespace ECSExtension.Widgets
         {
             ClipboardPanel.Copy(Target);
         }
-        
-        public void SetEnabled(bool enabled)
-        {
-            EntityManager entityManager = Owner.entityManager;
-            if (IsEntityEnabled() == enabled)
-            {
-                return;
-            }
-            ComponentType componentType = ComponentType.ReadWrite<Disabled>();
-            if (entityManager.HasModComponent<LinkedEntityGroup>(Target))
-            {
-                NativeArray<Entity> entities = Reinterpret<LinkedEntityGroup, Entity>(entityManager.GetBuffer<LinkedEntityGroup>(Target)).ToNativeArray(Allocator.TempJob);
-                if (enabled)
-                {
-                    entityManager.RemoveComponent(entities, componentType);
-                }
-                else
-                {
-                    entityManager.AddComponent(entities, componentType);
-                }
-                entities.Dispose();
-                return;
-            }
-            if (!enabled)
-            {
-                entityManager.AddComponent(Target, componentType);
-                return;
-            }
-            entityManager.RemoveComponent(Target, componentType);
-        }
-        
-        public unsafe DynamicBuffer<U> Reinterpret<T, U>(DynamicBuffer<T> buffer) 
-            where U : unmanaged
-            where T : unmanaged
-        {
-            return new DynamicBuffer<U>(buffer.m_Buffer, buffer.m_InternalCapacity);
-        }
 
         void OnActiveSelfToggled(bool value)
         {
-            SetEnabled(value);
+            ECSUtil.SetEnabled(Owner.entityManager, Target, value);
             UpdateEntityInfo(false, true);
         }
 

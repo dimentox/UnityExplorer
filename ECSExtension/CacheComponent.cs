@@ -1,5 +1,5 @@
 using System;
-using CoreLib.Submodules.ModComponent;
+using ECSExtension.Util;
 using Unity.Entities;
 using UnityExplorer;
 using UnityExplorer.CacheObject;

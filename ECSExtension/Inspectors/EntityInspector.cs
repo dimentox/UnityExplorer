@@ -1,13 +1,9 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using CoreLib.Submodules.ModComponent;
+using ECSExtension.Util;
 using ECSExtension.Widgets;
-using HarmonyLib;
 using Il2CppInterop.Runtime;
-using Il2CppInterop.Runtime.InteropTypes.Arrays;
-using Il2CppSystem;
-using Il2CppSystem.Reflection;
 using Unity.Collections;
 using Unity.Entities;
 using UnityEngine;
@@ -16,20 +12,11 @@ using UnityExplorer;
 using UnityExplorer.CacheObject;
 using UnityExplorer.Inspectors;
 using UnityExplorer.UI.Panels;
-using UnityExplorer.UI.Widgets;
 using UnityExplorer.UI.Widgets.AutoComplete;
 using UniverseLib;
 using UniverseLib.UI;
 using UniverseLib.UI.Models;
 using UniverseLib.UI.Widgets.ScrollView;
-using UniverseLib.Utility;
-using Array = System.Array;
-using BindingFlags = System.Reflection.BindingFlags;
-using Console = System.Console;
-using MethodInfo = System.Reflection.MethodInfo;
-using Object = Il2CppSystem.Object;
-using Type = System.Type;
-using ValueType = System.ValueType;
 
 namespace ECSExtension
 {
@@ -77,6 +64,10 @@ namespace ECSExtension
             return UIRoot;
         }
 
+        public override void Update()
+        {
+        }
+
         public override void OnBorrowedFromPool(object target)
         {
             base.OnBorrowedFromPool(target);
@@ -114,14 +105,7 @@ namespace ECSExtension
         public string GetEntityName()
         {
             if (currentWorld == null) return currentEntity.ToString();
-            entityManager.GetName(currentEntity, out FixedString64Bytes fname);
-            string name = fname.Value;
-            if (string.IsNullOrEmpty(name))
-            {
-                name = currentEntity.ToString();
-            }
-
-            return name;
+            return ECSUtil.GetName(currentEntity, currentWorld.EntityManager);
         }
 
         public void SetWorld(int index)
@@ -143,18 +127,7 @@ namespace ECSExtension
 
             LayoutRebuilder.ForceRebuildLayoutImmediate(InspectorPanel.Instance.ContentRect);
         }
-
-        public override void OnReturnToPool()
-        {
-            base.OnReturnToPool();
-        }
-
-
-        public override void Update()
-        {
-            if (!this.IsActive)
-                return;
-        }
+        
 
         private NativeArray<ComponentType> GetComponents()
         {
@@ -180,7 +153,7 @@ namespace ECSExtension
                 {
                     return new CacheComponent<T>(this);
                 }
-                catch (System.Exception e)
+                catch (Exception e)
                 {
                     ExplorerCore.LogWarning($"Error getting component data {nameof(T)}, message: {e.Message}, stacktrace:\n {e.StackTrace}");
                 }
@@ -189,9 +162,9 @@ namespace ECSExtension
             return null;
         }
 
-        public void RemoveComponent<T>() where T : unmanaged
+        public void RemoveComponent(ComponentType type)
         {
-            currentWorld.EntityManager.RemoveComponent<T>(currentEntity);
+            currentWorld.EntityManager.RemoveComponent(currentEntity, type);
         }
         
         private void OnAddComponentClicked(string text)
@@ -205,12 +178,11 @@ namespace ECSExtension
                     int index = TypeManager.GetTypeIndex(il2cpptype);
                     if (index > 0)
                     {
-                        MethodInfo method = typeof(EntityInspector).GetMethod(nameof(AddComponent), AccessTools.all);
-                        method.MakeGenericMethod(type).Invoke(this, Array.Empty<object>());
+                        entityManager.AddComponent(currentEntity, ComponentType.FromTypeIndex(index));
                         UpdateComponents();
                     }
                 }
-                catch (System.Exception ex)
+                catch (Exception ex)
                 {
                     ExplorerCore.LogWarning($"Exception adding component: {ex.ReflectionExToString()}");
                 }
@@ -221,27 +193,13 @@ namespace ECSExtension
             }
         }
 
-        public void AddComponent<T>()
-        {
-            currentWorld.EntityManager.AddModComponent<T>(currentEntity);
-        }
-
         private void ConstructLists()
         {
             var listHolder = UIFactory.CreateUIObject("ListHolders", UIRoot);
             UIFactory.SetLayoutGroup<HorizontalLayoutGroup>(listHolder, false, true, true, true, 8, 2, 2, 2, 2);
             UIFactory.SetLayoutElement(listHolder, minHeight: 150, flexibleWidth: 9999, flexibleHeight: 9999);
 
-            // Left group (Children)
-
-            var leftGroup = UIFactory.CreateUIObject("EntitiesGroup", listHolder);
-            UIFactory.SetLayoutElement(leftGroup, flexibleWidth: 9999, flexibleHeight: 9999);
-            UIFactory.SetLayoutGroup<VerticalLayoutGroup>(leftGroup, false, false, true, true, 2);
-
-            var childrenLabel = UIFactory.CreateLabel(leftGroup, "EntitiesListTitle", "Entities", TextAnchor.MiddleCenter, default, false, 16);
-            UIFactory.SetLayoutElement(childrenLabel.gameObject, flexibleWidth: 9999);
-
-            // Right group (Components)
+            // Components
 
             var rightGroup = UIFactory.CreateUIObject("ComponentGroup", listHolder);
             UIFactory.SetLayoutElement(rightGroup, flexibleWidth: 9999, flexibleHeight: 9999);

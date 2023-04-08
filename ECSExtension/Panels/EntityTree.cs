@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using CoreLib.Submodules.ModComponent;
+using ECSExtension.Util;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Jobs;
@@ -95,11 +94,11 @@ namespace ECSExtension.Panels
             {
                 if (value)
                 {
-                    world.EntityManager.RemoveComponent(entity, ComponentType.ReadOnly<Disabled>());
+                    world.EntityManager.RemoveComponent(entity, ECSUtil.ReadOnly<Disabled>());
                 }
                 else
                 {
-                    world.EntityManager.AddModComponent<Disabled>(entity);
+                    world.EntityManager.AddComponent(entity, ECSUtil.ReadOnly<Disabled>());
                 }
             }
         }

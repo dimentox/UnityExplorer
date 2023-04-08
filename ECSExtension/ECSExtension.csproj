@@ -124,8 +124,6 @@
         <PackageReference Include="BepInEx.Unity.IL2CPP" Version="6.0.0-be*" PrivateAssets="all" />
         <PackageReference Include="Il2CppInterop.Common" Version="1.5.0-dots" />
         <PackageReference Include="Il2CppInterop.Runtime" Version="1.5.0-dots" />
-
-        <Reference Include="..\lib\interop\CoreLib.dll" Private="false" SpecificVersion="true" />
         
     </ItemGroup>
     

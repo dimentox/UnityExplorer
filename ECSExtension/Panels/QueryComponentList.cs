@@ -4,7 +4,6 @@ using Il2CppInterop.Runtime;
 using Unity.Entities;
 using UnityEngine.UI;
 using UniverseLib;
-using UniverseLib.UI;
 using UniverseLib.UI.Widgets.ScrollView;
 
 namespace ECSExtension.Panels

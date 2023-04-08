@@ -1,23 +1,16 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using Il2CppInterop.Runtime;
+using Il2CppSystem;
 using Unity.Entities;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using UnityExplorer;
 using UnityExplorer.ObjectExplorer;
-using UnityExplorer.UI;
 using UnityExplorer.UI.Panels;
-using UniverseLib;
 using UniverseLib.UI;
 using UniverseLib.UI.Models;
-using UniverseLib.UI.Widgets;
 using UniverseLib.UI.Widgets.ScrollView;
-using UniverseLib.Utility;
 
 namespace ECSExtension.Panels
 {
@@ -29,7 +22,7 @@ namespace ECSExtension.Panels
         {
             Parent = parent;
             
-            var @delegate = DelegateSupport.ConvertDelegate<Il2CppSystem.Action<World>>(OnWorldStateChanged);
+            var @delegate = DelegateSupport.ConvertDelegate<Action<World>>(OnWorldStateChanged);
             World.WorldCreated += @delegate;
             World.WorldDestroyed += @delegate;
         }
@@ -201,7 +194,7 @@ namespace ECSExtension.Panels
 
             // Transform Tree
 
-            UniverseLib.UI.Widgets.ScrollView.ScrollPool<EntityCell> scrollPool = UIFactory.CreateScrollPool<EntityCell>(uiRoot, "EntityTree", out GameObject scrollObj,
+            ScrollPool<EntityCell> scrollPool = UIFactory.CreateScrollPool<EntityCell>(uiRoot, "EntityTree", out GameObject scrollObj,
                 out GameObject scrollContent, new Color(0.11f, 0.11f, 0.11f));
             UIFactory.SetLayoutElement(scrollObj, flexibleHeight: 9999);
             UIFactory.SetLayoutElement(scrollContent, flexibleHeight: 9999);

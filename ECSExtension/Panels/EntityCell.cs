@@ -1,6 +1,5 @@
 using System;
-using CoreLib.Submodules.ModComponent;
-using Unity.Collections;
+using ECSExtension.Util;
 using Unity.Entities;
 using UnityEngine;
 using UnityEngine.UI;
@@ -33,18 +32,10 @@ namespace ECSExtension
         public void ConfigureCell(Entity entity, EntityManager entityManager)
         {
             this.entity = entity;
-            NameButton.ButtonText.text = getName(entity, entityManager);
+            NameButton.ButtonText.text = ECSUtil.GetName(entity, entityManager);
             EnabledToggle.Set(!entityManager.HasModComponent<Disabled>(entity), false);
         }
-
-        private static string getName(Entity entity, EntityManager entityManager)
-        {
-            entityManager.GetName(entity, out FixedString64Bytes fixedString);
-            string name = fixedString.Value;
-            return string.IsNullOrEmpty(name) ? entity.ToString() : name;
-        }
-
-
+        
         private void MainButtonClicked()
         {
             OnEntityClicked?.Invoke(entity);

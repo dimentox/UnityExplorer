@@ -1,17 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 using HarmonyLib;
-using Il2CppInterop.Runtime;
 using Unity.Collections;
 using Unity.Entities;
-using UnityEngine;
 using UnityExplorer;
-using UnityExplorer.Inspectors;
 using UniverseLib;
-using UniverseLib.UI.Widgets.ButtonList;
 using UniverseLib.UI.Widgets.ScrollView;
-using UniverseLib.Utility;
 using Type = Il2CppSystem.Type;
 
 namespace ECSExtension
@@ -40,7 +34,6 @@ namespace ECSExtension
         {
             base.OnCellBorrowed(cell);
 
-            cell.OnBehaviourToggled += OnBehaviourToggled;
             cell.OnDestroyClicked += OnDestroyClicked;
         }
 
@@ -71,22 +64,6 @@ namespace ECSExtension
             InspectorManager.Inspect(data.TryEvaluate(), data);
         }
 
-        private void OnBehaviourToggled(bool value, int index)
-        {
-            try
-            {
-                var entries = GetEntries();
-                var comp = entries[index];
-
-             //   if (comp.TryCast<Behaviour>() is Behaviour behaviour)
-            //        behaviour.enabled = value;
-            }
-            catch (Exception ex)
-            {
-                ExplorerCore.LogWarning($"Exception toggling Behaviour.enabled: {ex.ReflectionExToString()}");
-            }
-        }
-
         private void OnDestroyClicked(int index)
         {
             try
@@ -94,8 +71,7 @@ namespace ECSExtension
                 var entries = GetEntries();
                 var comp = entries[index];
                 
-                InvokeForComponent(comp, nameof(RemoveComponent));
-
+                Parent.RemoveComponent(comp);
                 Parent.UpdateComponents();
             }
             catch (Exception ex)
@@ -103,12 +79,7 @@ namespace ECSExtension
                 ExplorerCore.LogWarning($"Exception destroying Component: {ex.ReflectionExToString()}");
             }
         }
-
-        private void RemoveComponent<T>() where T : unmanaged
-        {
-            Parent.RemoveComponent<T>();
-        }
-
+        
         private static readonly Dictionary<string, string> compToStringCache = new Dictionary<string, string>();
 
         // Called from ButtonListHandler.SetCell, will be valid
@@ -122,21 +93,12 @@ namespace ECSExtension
                 var comp = entries[index];
                 Type type = comp.GetManagedType();
 
-               // if (!compToStringCache.ContainsKey(type.AssemblyQualifiedName))
-              //      compToStringCache.Add(type.AssemblyQualifiedName, SignatureHighlighter.Parse(type, true));
-
-              cell.Button.ButtonText.text = type.ToString(); //compToStringCache[type.AssemblyQualifiedName];
+                cell.Button.ButtonText.text = type.ToString();
             }
             catch (Exception e)
             {
                 ExplorerCore.Log($"Error setting component name: {e.Message}, stacktrace: {e.StackTrace}");
             }
-
-           /* // if component is the first index it must be the transform, dont show Destroy button for it.
-            if (index == 0 && cell.DestroyButton.Component.gameObject.activeSelf)
-                cell.DestroyButton.Component.gameObject.SetActive(false);
-            else if (index > 0 && !cell.DestroyButton.Component.gameObject.activeSelf)
-                cell.DestroyButton.Component.gameObject.SetActive(true);*/
         }
     }
 }

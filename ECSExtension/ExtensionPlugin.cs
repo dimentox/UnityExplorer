@@ -1,11 +1,9 @@
 using System;
 using System.Collections.Generic;
 using BepInEx;
-using BepInEx.IL2CPP;
 using BepInEx.Unity.IL2CPP;
 using ECSExtension.Panels;
 using Unity.Entities;
-using UnityEngine;
 using UnityExplorer;
 using UnityExplorer.Inspectors;
 using UnityExplorer.UI;
