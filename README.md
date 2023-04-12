@@ -1,109 +1,27 @@
-<p align="center">
-  <img align="center" src="img/icon.png">
-</p>
+# UnityExplorer
 
-<p align="center">
-  🔍 An in-game UI for exploring, debugging and modifying Unity games.
-</p>
-<p align="center">
-  ✔️ Supports most Unity versions from 5.2 to 2021+ (IL2CPP and Mono).
-</p>
-<p align="center">
-  ✨ Powered by <a href="https://github.com/sinai-dev/UniverseLib">UniverseLib</a>
-</p>
+This version was forked, and only supports Bleeding Edge BepInEx builds on DOTS based games. Make sure to use BepInEx build from Core Keeper TS, as it's custom at the moment.
 
-# Releases  [![](https://img.shields.io/github/downloads/sinai-dev/UnityExplorer/total.svg)](../../releases)
+🔍 An in-game UI for exploring, debugging and modifying Unity games.
+✔️ Supports most Unity versions from 5.2 to 2021+ (IL2CPP and Mono).
 
-[![](https://img.shields.io/github/release/sinai-dev/UnityExplorer.svg?label=version)](../../releases/latest) [![](https://img.shields.io/github/workflow/status/sinai-dev/UnityExplorer/Build%20UnityExplorer)](https://github.com/sinai-dev/UnityExplorer/actions) [![](https://img.shields.io/github/downloads/sinai-dev/UnityExplorer/latest/total.svg)](../../releases/latest)
 
-⚡ Thunderstore releases: [BepInEx Mono](https://thunderstore.io/package/sinai-dev/UnityExplorer) | [BepInEx IL2CPP](https://gtfo.thunderstore.io/package/sinai-dev/UnityExplorer_IL2CPP) | [MelonLoader IL2CPP](https://boneworks.thunderstore.io/package/sinai-dev/UnityExplorer_IL2CPP_ML)
+[Current GitHub](https://github.com/kremnev8/UnityExplorer)
 
-## Release schedule
+[Original GitHub](https://github.com/sinai-dev/UnityExplorer)
 
-Releases will be posted at most once per week, generally on weekends. 
+# Manual install
 
-Nightly builds can be found [here](https://github.com/sinai-dev/UnityExplorer/actions).
+BepInEx:
 
-## BepInEx
+1. Take the `UnityExplorer.BIE.[version].dll` file and the `UniverseLib.[version].dll` file and put them in `BepInEx\plugins\`.
 
-| Release | IL2CPP | Mono |
-| ------- | ------ | ---- |
-| BIE 6.X | ✅ [link](https://github.com/sinai-dev/UnityExplorer/releases/latest/download/UnityExplorer.BepInEx.IL2CPP.zip) | ✅ [link](https://github.com/sinai-dev/UnityExplorer/releases/latest/download/UnityExplorer.BepInEx6.Mono.zip) |
-| BIE 6.X (CoreCLR) | ✅ [link](https://github.com/sinai-dev/UnityExplorer/releases/latest/download/UnityExplorer.BepInEx.IL2CPP.CoreCLR.zip) | ✖ |
-| BIE 5.X | ✖️ n/a | ✅ [link](https://github.com/sinai-dev/UnityExplorer/releases/latest/download/UnityExplorer.BepInEx5.Mono.zip) |
+MelonLoader:
 
-1. Unzip the release file into a folder
-2. Take the `plugins/sinai-dev-UnityExplorer` folder and place it in `BepInEx/plugins/`
-
-<i>Note: BepInEx 6 is obtainable via [builds.bepinex.dev](https://builds.bepinex.dev/projects/bepinex_be)</i>
-
-## MelonLoader
-
-| Release | IL2CPP | Mono |
-| ------- | ------ | ---- |
-| ML 0.5  | ✅ [link](https://github.com/sinai-dev/UnityExplorer/releases/latest/download/UnityExplorer.MelonLoader.IL2CPP.zip) | ✅ [link](https://github.com/sinai-dev/UnityExplorer/releases/latest/download/UnityExplorer.MelonLoader.Mono.zip) | 
-| ML 0.6  | ✅ [link](https://github.com/sinai-dev/UnityExplorer/releases/latest/download/UnityExplorer.MelonLoader.IL2CPP.net6preview.zip) | ✖️ |
-
-1. Unzip the release file into a folder
-2. Copy the DLL inside the `Mods` folder into your MelonLoader `Mods` folder
-3. Copy all of the DLLs inside the `UserLibs` folder into your MelonLoader `UserLibs` folder
-
-## Standalone
-
-| IL2CPP | Mono |
-| ------ | ---- |
-| ✅ [link](https://github.com/sinai-dev/UnityExplorer/releases/latest/download/UnityExplorer.Standalone.IL2CPP.zip) | ✅ [link](https://github.com/sinai-dev/UnityExplorer/releases/latest/download/UnityExplorer.Standalone.Mono.zip) | 
-
-The standalone release can be used with any injector or loader of your choice, but it requires you to load the dependencies manually.
-
-1. Ensure the required libs are loaded - UniverseLib, HarmonyX and MonoMod. Take them from the [`UnityExplorer.Editor`](https://github.com/sinai-dev/UnityExplorer/releases/latest/download/UnityExplorer.Editor.zip) release if you need them.
-2. For IL2CPP, load Il2CppAssemblyUnhollower and start an [Il2CppAssemblyUnhollower runtime](https://github.com/knah/Il2CppAssemblyUnhollower#required-external-setup)
-2. Load the UnityExplorer DLL
-3. Create an instance of Unity Explorer with `UnityExplorer.ExplorerStandalone.CreateInstance();`
-4. Optionally subscribe to the `ExplorerStandalone.OnLog` event to handle logging if you wish
-
-## Unity Editor
-
-1. Download the [`UnityExplorer.Editor`](https://github.com/sinai-dev/UnityExplorer/releases/latest/download/UnityExplorer.Editor.zip) release.
-2. Install the package, either by using the Package Manager and importing the `package.json` file, or by manually dragging the folder into your `Assets` folder.
-3. Drag the `Runtime/UnityExplorer` prefab into your scene, or create a GameObject and add the `Explorer Editor Behaviour` script to it.
-
-# Common issues and solutions
-
-Although UnityExplorer should work out of the box for most Unity games, in some cases you may need to tweak the settings for it to work properly.
-
-To adjust the settings, open the config file:
-* BepInEx: `BepInEx\config\com.sinai.unityexplorer.cfg`
-* MelonLoader: `UserData\MelonPreferences.cfg`
-* Standalone: `sinai-dev-UnityExplorer\config.cfg`
-
-Try adjusting the following settings and see if it fixes your issues:
-* `Startup_Delay_Time` - increase to 5-10 seconds (or more as needed), can fix issues with UnityExplorer being destroyed or corrupted during startup.
-* `Disable_EventSystem_Override` - if input is not working properly, try setting this to `true`.
-
-If these fixes do not work, please create an issue in this repo and I'll do my best to look into it.
+1. Take the `UnityExplorer.ML.[version].dll` file and put it in the `Mods\` folder created by MelonLoader.
+2. Take the `UniverseLib.[version].dll` file can put it in the `UserLibs/` folder created by MelonLoader.
 
 # Features
-
-<p align="center">
-  <a href="https://raw.githubusercontent.com/sinai-dev/UnityExplorer/master/img/preview.png">
-    <img src="img/preview.png" />
-  </a>
-</p>
-
-### Inspector API
-
-If you want to inspect an object or Type from outside the C# console, use the `InspectorManager` class:
-
-**To inspect an object:**
-```csharp
-UnityExplorer.InspectorManager.Inspect(theObject);
-```
-
-**To inspect a Type:**
-```cs
-UnityExplorer.InspectorManager.Inspect(typeof(SomeClass));
-```
 
 ### Object Explorer
 
@@ -113,6 +31,7 @@ UnityExplorer.InspectorManager.Inspect(typeof(SomeClass));
 * Use the <b>Object Search</b> tab to search for Unity objects (including GameObjects, Components, etc), C# Singletons or Static Classes.
   * Use the UnityObject search to look for any objects which derive from `UnityEngine.Object`, with optional filters
   * The singleton search will look for any classes with a typical "Instance" field, and check it for a current value. This may cause unexpected behaviour in some IL2CPP games as we cannot distinguish between true properties and field-properties, so some property accessors will be invoked.
+* Use the <b>World Explorer</b> tab to traverse active worlds,as well to perform EntityQueries on them to filter the results.
 
 ### Inspector
 
@@ -125,8 +44,10 @@ The inspector is used to see detailed information on objects of any type and man
   * Automatic updating is not enabled by default, and you must press Apply for any changes you make to take effect.
   * Press the `▼` button to expand certain values such as strings, enums, lists, dictionaries, some structs, etc
   * Use the filters at the top to quickly find the members you are looking for
-  * For `Texture2D`, `Image`, `Sprite` and `Material` objects, there is a `View Texture` button at the top of the inspector which lets you view the Texture(s) and save them as a PNG file. 
+  * For `Texture2D`, `Image, `Sprite` and `Material` objects, there is a `View Texture` button at the top of the inspector which lets you view the Texture(s) and save them as a PNG file. 
   * For `AudioClip` objects there is a `Show Player` button which opens an audio player widget. For clips which are loaded as `DecompressOnLoad`, there is also a button to save them to a `.wav` file. 
+* The <b>Entity Inspectors</b> (tab prefix `[ECS]`) are used to inspect Entities. 
+  * In this mode you can view all the components entity has, and modify them. The changes are applied to the original ECS component.
 
 ### C# Console
 
@@ -168,17 +89,11 @@ The inspector is used to see detailed information on objects of any type and man
   * MelonLoader: `UserData\MelonPreferences.cfg`
   * Standalone `{DLL_location}\sinai-dev-UnityExplorer\config.cfg`
 
-# Building
+### Settings
 
-1. Run the `build.ps1` powershell script to build UnityExplorer. Releases are found in the `Release` folder.
-
-Building individual configurations from your IDE is fine, though note that the intial build process builds into `Release/<version>/...` instead of the subfolders that the powershell script uses. Batch building is not currently supported with the project.
+* You can change the settings via the "Options" tab of the menu, or directly from the config file.
 
 # Acknowledgments
 
 * [ManlyMarco](https://github.com/ManlyMarco) for [Runtime Unity Editor](https://github.com/ManlyMarco/RuntimeUnityEditor) \[[license](THIRDPARTY_LICENSES.md#runtimeunityeditor-license)\], the ScriptEvaluator from RUE's REPL console was used as the base for UnityExplorer's C# console.
-* [Geoffrey Horsington](https://github.com/ghorsington) for [mcs-unity](https://github.com/sinai-dev/mcs-unity) \[no license\], used as the `Mono.CSharp` reference for the C# Console.
-
-### Disclaimer
-
-UnityExplorer is in no way associated with Unity Technologies. "Unity", Unity logos, and other Unity trademarks are trademarks or registered trademarks of Unity Technologies or its affiliates in the U.S. and elsewhere.
+* [denikson](https://github.com/denikson) (aka Horse) for [mcs-unity](https://github.com/sinai-dev/mcs-unity) \[no license\], used as the `Mono.CSharp` reference for the C# Console.
