@@ -12,6 +12,7 @@ using UnityExplorer.UI.Panels;
 namespace ECSExtension
 {
     [BepInPlugin(PLUGIN_GUID, PLUGIN_NAME, VERSION)]
+    [BepInDependency(ExplorerCore.GUID)]
     public class ExtensionPlugin : BasePlugin
     {
         public const string PLUGIN_NAME = "ECS Inspector Extension";
@@ -46,9 +47,6 @@ namespace ECSExtension
 
         public override bool Unload()
         {
-            ObjectExplorerPanel explorerPanel = UIManager.GetPanel<ObjectExplorerPanel>(UIManager.Panels.ObjectExplorer);
-            explorerPanel.RemoveTab(typeof(WorldExplorer));
-            
             List<InspectorBase> entityInspectors = new List<InspectorBase>();
             foreach (InspectorBase inspector in InspectorManager.Inspectors)
             {

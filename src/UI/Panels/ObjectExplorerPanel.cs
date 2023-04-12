@@ -34,23 +34,6 @@ namespace UnityExplorer.UI.Panels
             AddTabButton(tab.Name);
         }
 
-        public void RemoveTab(Type tabType)
-        {
-            int index = tabPages.FindIndex(panel => panel.GetType() == tabType);
-            if (index < 0) return;
-
-            UITabPanel panel = tabPages[index];
-            RemoveTabButton(index);
-            tabPages.RemoveAt(index);
-            Object.Destroy(panel.UIRoot);
-            if (SelectedTab == index)
-            {
-                SelectedTab = -1;
-                if (tabPages.Count - 1 >= 0)
-                    SetTab(tabPages.Count - 1);
-            }
-        }
-
         public void SetTab(int tabIndex)
         {
             if (SelectedTab != -1)
