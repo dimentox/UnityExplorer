@@ -7,7 +7,7 @@ using UniverseLib.UI.Widgets.ScrollView;
 
 namespace UnityExplorer.ObjectExplorer
 {
-    public class ObjectSearch : UIModel
+    public class ObjectSearch : UITabPanel
     {
         public ObjectExplorerPanel Parent { get; }
 
@@ -59,7 +59,9 @@ namespace UnityExplorer.ObjectExplorer
             resultsLabel.text = $"{currentResults.Count} results";
         }
 
-        public void Update()
+        public override string Name => "Object Search";
+
+        public override void Update()
         {
             if (context == SearchContext.UnityObject && lastCheckedTypeInput != desiredTypeInput)
             {

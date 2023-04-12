@@ -11,6 +11,8 @@ namespace UnityExplorer.CacheObject
         public override bool IsStatic => true;
         public override bool ShouldAutoEvaluate => false;
         public override bool CanWrite => false;
+        public override bool RefreshFromSource => false;
+
 
         public CacheConstructor(ConstructorInfo ci)
         {
@@ -51,7 +53,7 @@ namespace UnityExplorer.CacheObject
                 GenericArguments = ctorReturnType.GetGenericArguments();
         }
 
-        protected override object TryEvaluate()
+        public override object TryEvaluate()
         {
             try
             {

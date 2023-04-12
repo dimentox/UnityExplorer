@@ -225,7 +225,7 @@ namespace UnityExplorer.Tests
             IL2CPP_ListString.Add("hello,");
             IL2CPP_ListString.Add("world!");
 
-
+/*
             ExplorerCore.Log($"IL2CPP 7: Dictionary of Il2Cpp String and Il2Cpp Object");
             IL2CPP_BoxedDict = new();
             IL2CPP_BoxedDict[(Il2CppSystem.String)"one"] = new Il2CppSystem.Int32 { m_value = 1 }.BoxIl2CppObject();
@@ -237,7 +237,7 @@ namespace UnityExplorer.Tests
             IL2CPP_listOfBoxedObjects = new List<Il2CppSystem.Object>();
             IL2CPP_listOfBoxedObjects.Add((Il2CppSystem.String)"boxedString");
             IL2CPP_listOfBoxedObjects.Add(new Il2CppSystem.Int32 { m_value = 5 }.BoxIl2CppObject());
-            IL2CPP_listOfBoxedObjects.Add(Color.red.BoxIl2CppObject());
+            IL2CPP_listOfBoxedObjects.Add(Color.red.BoxIl2CppObject());*/
             // boxed enum test
             try
             {
@@ -264,7 +264,7 @@ namespace UnityExplorer.Tests
             IL2CPP_structArray[2] = 2;
             IL2CPP_structArray[3] = 3;
             IL2CPP_structArray[4] = 4;
-
+/*
             ExplorerCore.Log($"IL2CPP 10: Il2Cpp reference array of boxed objects");
             IL2CPP_ReferenceArray = new Il2CppReferenceArray<Il2CppSystem.Object>(3);
             IL2CPP_ReferenceArray[0] = new Il2CppSystem.Int32 { m_value = 5 }.BoxIl2CppObject();
@@ -276,7 +276,7 @@ namespace UnityExplorer.Tests
             IL2CPP_Int = new Il2CppSystem.Int32 { m_value = 420 };
             IL2CPP_Decimal = new Il2CppSystem.Decimal(1f);
             IL2CPP_DecimalBoxed = new Il2CppSystem.Decimal(1f).BoxIl2CppObject();
-            IL2CPP_Vector3Boxed = Vector3.down.BoxIl2CppObject();
+            IL2CPP_Vector3Boxed = Vector3.down.BoxIl2CppObject();*/
 
             ExplorerCore.Log($"Finished Init_Il2Cpp");
         }

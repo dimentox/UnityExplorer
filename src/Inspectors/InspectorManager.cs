@@ -1,4 +1,5 @@
-﻿using UnityExplorer.CacheObject;
+using HarmonyLib;
+using UnityExplorer.CacheObject;
 using UnityExplorer.Inspectors;
 using UnityExplorer.UI;
 using UnityExplorer.UI.Panels;
@@ -16,8 +17,15 @@ namespace UnityExplorer
         public static float PanelWidth;
 
         public static event Action OnInspectedTabsChanged;
+        
+        public static List<Func<object, Type>> customInspectors = new List<Func<object, Type>>();
 
         public static void Inspect(object obj, CacheObjectBase parent = null)
+        {
+            Inspect(obj, parent, true);
+        }
+        
+        public static void Inspect(object obj, CacheObjectBase parent, bool useCustomInspectors)
         {
             if (obj.IsNullOrDestroyed())
                 return;
@@ -26,6 +34,21 @@ namespace UnityExplorer
 
             if (TryFocusActiveInspector(obj))
                 return;
+
+            if (customInspectors.Count > 0 && useCustomInspectors)
+            {
+                foreach (var getInspector in customInspectors)
+                {
+                    Type inspectorType = getInspector(obj);
+                    if (inspectorType != null)
+                    {
+                        MethodInfo methodInfo = typeof(InspectorManager).GetMethod(nameof(CreateInspector), AccessTools.all);
+                        MethodInfo genericMethod = methodInfo.MakeGenericMethod(inspectorType);
+                        genericMethod.Invoke(null, new[] {obj, false, null});
+                        return;
+                    }
+                }
+            }
 
             if (obj is GameObject)
                 CreateInspector<GameObjectInspector>(obj);
@@ -100,6 +123,7 @@ namespace UnityExplorer
 
         static void CreateInspector<T>(object target, bool staticReflection = false, CacheObjectBase parent = null) where T : InspectorBase
         {
+            Debug.Log($"Create inspector, type: {typeof(T)}");
             T inspector = Pool<T>.Borrow();
             Inspectors.Add(inspector);
             inspector.Target = target;

@@ -22,6 +22,8 @@ namespace UnityExplorer.CacheObject
         public override bool ShouldAutoEvaluate => true;
         public override bool HasArguments => false;
         public override bool CanWrite => true;
+        public override bool RefreshFromSource => false;
+
 
         public void UpdateValueFromSource()
         {
@@ -40,6 +42,11 @@ namespace UnityExplorer.CacheObject
             RefConfigElement.BoxedValue = value;
         }
 
+        public override object TryEvaluate()
+        {
+            return null;
+        }
+        
         protected override bool TryAutoEvaluateIfUnitialized(CacheObjectCell cell) => true;
     }
 }

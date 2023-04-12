@@ -10,6 +10,8 @@ namespace UnityExplorer.CacheObject
         public override bool ShouldAutoEvaluate => true;
         public override bool HasArguments => false;
         public override bool CanWrite => Owner?.CanWrite ?? false;
+        public override bool RefreshFromSource => false;
+
 
         public void SetListOwner(InteractiveList list, int listIndex)
         {
@@ -31,6 +33,11 @@ namespace UnityExplorer.CacheObject
         public override void TrySetUserValue(object value)
         {
             (Owner as InteractiveList).TrySetValueToIndex(value, this.ListIndex);
+        }
+
+        public override object TryEvaluate()
+        {
+            return null;
         }
 
         protected override bool TryAutoEvaluateIfUnitialized(CacheObjectCell cell) => true;

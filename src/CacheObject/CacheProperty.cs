@@ -10,6 +10,8 @@ namespace UnityExplorer.CacheObject
         public override bool IsStatic => m_isStatic ?? (bool)(m_isStatic = PropertyInfo.GetAccessors(true)[0].IsStatic);
         private bool? m_isStatic;
 
+        public override bool RefreshFromSource => PropertyInfo.PropertyType.IsValueType;
+
         public override bool ShouldAutoEvaluate => !HasArguments;
 
         public CacheProperty(PropertyInfo pi)
@@ -24,7 +26,7 @@ namespace UnityExplorer.CacheObject
             Arguments = PropertyInfo.GetIndexParameters();
         }
 
-        protected override object TryEvaluate()
+        public override object TryEvaluate()
         {
             try
             {
