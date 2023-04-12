@@ -41,7 +41,7 @@ namespace ECSExtension.Widgets
             if (force || (!NameInput.Component.isFocused && GetEntityName() != lastName))
             {
                 lastName = GetEntityName();
-                Owner.Tab.TabText.text = $"[G] {GetEntityName()}";
+                Owner.Tab.TabText.text = $"[ECS] {GetEntityName()}";
                 NameInput.Text = GetEntityName();
             }
             
@@ -76,6 +76,9 @@ namespace ECSExtension.Widgets
         public string GetEntityName()
         {
             Owner.entityManager.GetName(Target, out FixedString64Bytes fixedString);
+            string name = fixedString.Value;
+            if (string.IsNullOrEmpty(name))
+                return Target.ToString();
             return fixedString.Value;
         }
 

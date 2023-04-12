@@ -37,7 +37,6 @@ namespace ECSExtension.Panels
         private readonly Dictionary<World, Dropdown.OptionData> sceneToDropdownOption = new();
         
         // scene loader
-        private Dropdown allWorldDropdown;
         private World _selectedWorld;
         private QueryComponentList queryComponentList;
         private Toggle includDisabledToggle;
