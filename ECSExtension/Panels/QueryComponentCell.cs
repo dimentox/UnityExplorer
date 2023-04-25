@@ -20,14 +20,30 @@ namespace ECSExtension.Panels
         public RectTransform Rect { get; set; }
         private TypeCompleter typeCompleter;
         private InputFieldRef componentInputField;
+        private Dropdown searchTypeDropdown;
         private int cellIndex;
 
+        private static readonly String[] options =
+        {
+            "Include",
+            "Exclude"
+        };
+        
         public Action<int, string> OnTextChanged;
+        public Action<int, int> OnSearchTypeChanged;
 
-        public void ConfigureCell(int index, string currentValue)
+        public void ConfigureCell(int index, QueryComponentList.SearchData currentValue)
         {
             cellIndex = index;
-            componentInputField.Text = currentValue;
+            componentInputField.Text = currentValue.componentName;
+            searchTypeDropdown.value = (int)currentValue.searchType;
+        }
+        
+        public void SetCellToDefault(int index)
+        {
+            cellIndex = index;
+            componentInputField.Text = "";
+            searchTypeDropdown.value = 0;
         }
 
         private void OnInputChanged(string text)
@@ -48,14 +64,22 @@ namespace ECSExtension.Panels
             // Class input
 
             Text unityClassLbl = UIFactory.CreateLabel(UIRoot, "ComponentLabel", "Component:", TextAnchor.MiddleLeft);
-            UIFactory.SetLayoutElement(unityClassLbl.gameObject, minWidth: 110, flexibleWidth: 0);
+            UIFactory.SetLayoutElement(unityClassLbl.gameObject, minWidth: 90, flexibleWidth: 0);
 
             componentInputField = UIFactory.CreateInputField(UIRoot, "CComponentInput", "...");
             UIFactory.SetLayoutElement(componentInputField.UIRoot, minHeight: 25, flexibleHeight: 0, flexibleWidth: 9999);
             componentInputField.OnValueChanged += OnInputChanged;
+
+            GameObject layerDrop = UIFactory.CreateDropdown(UIRoot, "SearchTypeDropDown", out searchTypeDropdown, "Include", 14, OnSearchDropdownChanged, options);
+            UIFactory.SetLayoutElement(layerDrop, minHeight: 25, minWidth: 100);
             
             typeCompleter = new TypeCompleter(typeof(ValueType), componentInputField, false, false, false);
             return UIRoot;
+        }
+
+        private void OnSearchDropdownChanged(int searchType)
+        {
+            OnSearchTypeChanged?.Invoke(cellIndex, searchType);
         }
     }
 }

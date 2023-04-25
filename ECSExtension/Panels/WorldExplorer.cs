@@ -8,9 +8,11 @@ using UnityEngine.UI;
 using UnityExplorer;
 using UnityExplorer.ObjectExplorer;
 using UnityExplorer.UI.Panels;
+using UniverseLib;
 using UniverseLib.UI;
 using UniverseLib.UI.Models;
 using UniverseLib.UI.Widgets.ScrollView;
+using UniverseLib.Utility;
 
 namespace ECSExtension.Panels
 {
@@ -40,7 +42,7 @@ namespace ECSExtension.Panels
         private World _selectedWorld;
         private QueryComponentList queryComponentList;
         private Toggle includDisabledToggle;
-        
+        private InputFieldRef nameFilterInputField;
 
 
         public World SelectedWorld
@@ -119,12 +121,19 @@ namespace ECSExtension.Panels
         
         private void DoQuery()
         {
-            ComponentType[] components = queryComponentList.GetComponentTypes();
+            ComponentType[] include = queryComponentList.GetComponents(QueryComponentList.SearchType.Include);
+            ComponentType[] exclude = queryComponentList.GetComponents(QueryComponentList.SearchType.Exclude);
             bool includeDisabled = includDisabledToggle.isOn;
-            Tree.UseQuery(components, includeDisabled);
+            Tree.UseQuery(include, exclude, includeDisabled);
             Tree.RefreshData(true);
         }
         
+        private void OnInputChanged(string filter)
+        {
+            Tree.SetFilter(filter);
+        }
+        
+        void OnCellClicked(Entity obj) => InspectorManager.Inspect(obj);
 
         public override void ConstructUI(GameObject content)
         {
@@ -180,16 +189,23 @@ namespace ECSExtension.Panels
             UIFactory.SetLayoutElement(queryButton.Component.gameObject, minHeight: 25, flexibleHeight: 0);
             queryButton.OnClick += DoQuery;
 
+            // name filter row
+            
+            GameObject nameFilterRow = UIFactory.CreateHorizontalGroup(toolbar, "Name Filter", true, true, true, true, 2, new Vector4(2, 2, 2, 2));
+            UIFactory.SetLayoutElement(nameFilterRow, minHeight: 30, flexibleHeight: 0);
+            
+            nameFilterInputField = UIFactory.CreateInputField(nameFilterRow, "Name Filter Field", "Search and press enter...");
+            UIFactory.SetLayoutElement(nameFilterInputField.UIRoot, minHeight: 25, flexibleHeight: 0, flexibleWidth: 9999);
+            nameFilterInputField.Component.GetOnEndEdit().AddListener(OnInputChanged);
+            
+            
             // tree labels row
 
             GameObject labelsRow = UIFactory.CreateHorizontalGroup(toolbar, "LabelsRow", true, true, true, true, 2, new Vector4(2, 2, 2, 2));
             UIFactory.SetLayoutElement(labelsRow, minHeight: 30, flexibleHeight: 0);
 
-            Text nameLabel = UIFactory.CreateLabel(labelsRow, "NameLabel", "Name", TextAnchor.MiddleLeft, color: Color.grey);
+            Text nameLabel = UIFactory.CreateLabel(labelsRow, "NameLabel", "Entity", TextAnchor.MiddleLeft, color: Color.grey);
             UIFactory.SetLayoutElement(nameLabel.gameObject, flexibleWidth: 9999, minHeight: 25);
-
-            Text indexLabel = UIFactory.CreateLabel(labelsRow, "IndexLabel", "Sibling Index", TextAnchor.MiddleLeft, fontSize: 12, color: Color.grey);
-            UIFactory.SetLayoutElement(indexLabel.gameObject, minWidth: 100, flexibleWidth: 0, minHeight: 25);
 
             // Transform Tree
 
@@ -202,7 +218,5 @@ namespace ECSExtension.Panels
             SelectedWorld = World.All.m_Source._items.First();
             Tree.RefreshData(true);
         }
-
-        void OnCellClicked(Entity obj) => InspectorManager.Inspect(obj);
     }
 }

@@ -1,5 +1,7 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using ECSExtension.Util;
 using Unity.Collections;
 using Unity.Entities;
@@ -15,7 +17,9 @@ namespace ECSExtension.Panels
         private World world;
         private EntityQuery query;
         private JobHandle queryHandle;
-        private NativeArray<Entity> entities;
+        private ModNativeArray<Entity> nativeArray;
+        private IList<Entity> entities;
+        private string currentFilter;
         
         public ScrollPool<EntityCell> ScrollPool;
         
@@ -39,24 +43,45 @@ namespace ECSExtension.Panels
             query =  world.EntityManager.UniversalQuery;
         }
 
-        public void UseQuery(ComponentType[] componentTypes, bool includeDisabled)
+        public void UseQuery(ComponentType[] include, ComponentType[] exclude, bool includeDisabled)
         {
             query = world.EntityManager.CreateEntityQuery(new EntityQueryDesc()
             {
-                All = componentTypes,
+                All = include,
+                None = exclude,
                 Options = includeDisabled ? EntityQueryOptions.IncludeDisabled : EntityQueryOptions.Default
             });
         }
+
+        public void SetFilter(string filter)
+        {
+            currentFilter = filter;
+            ApplyFilter(true);
+        }
+
+        private void ApplyFilter(bool refresh)
+        {
+            if (string.IsNullOrEmpty(currentFilter))
+                entities = nativeArray;
+            else
+                entities = nativeArray.Where(entity => ECSUtil.GetName(entity, world.EntityManager).Contains(currentFilter, StringComparison.InvariantCultureIgnoreCase)).ToList();
+
+            if (refresh)
+                ScrollPool.Refresh(true, true);
+        }
+
 
         public void RefreshData(bool jumpToTop)
         {
             if (refreshCoroutine != null || world == null)
                 return;
 
-            if (entities.IsCreated)
-                entities.Dispose();
+            if (nativeArray.IsCreated)
+                nativeArray.Dispose();
             
-            entities = query.ToEntityArrayAsync(Allocator.Persistent, out queryHandle);
+            nativeArray = new ModNativeArray<Entity>(query.ToEntityArrayAsync(Allocator.Persistent, out queryHandle));
+            entities = nativeArray;
+            
             refreshCoroutine = RuntimeHelper.StartCoroutine(RefreshCoroutine(jumpToTop));
         }
 
@@ -66,7 +91,8 @@ namespace ECSExtension.Panels
                 yield return null;
 
             queryHandle.Complete();
-            currentCount = entities.Length;
+            currentCount = nativeArray.Count;
+            ApplyFilter(false);
             
             ScrollPool.Refresh(true, jumpToTop);
             refreshCoroutine = null;
@@ -74,7 +100,7 @@ namespace ECSExtension.Panels
         
         public void SetCell(EntityCell cell, int index)
         {
-            if (entities.IsCreated && index < entities.Length)
+            if (index < entities.Count)
             {
                 cell.ConfigureCell(entities[index], world.EntityManager);
             }

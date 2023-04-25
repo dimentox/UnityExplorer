@@ -10,7 +10,7 @@ namespace ECSExtension.Panels
 {
     public class QueryComponentList : ICellPoolDataSource<QueryComponentCell>
     {
-        private List<string> componentNames = new List<string>();
+        private List<SearchData> componentNames = new List<SearchData>();
         private ScrollPool<QueryComponentCell> scrollPool;
         public int ItemCount => componentNames.Count + 1;
         private LayoutElement viewportLayout;
@@ -25,10 +25,11 @@ namespace ECSExtension.Panels
             scrollPool.Refresh(true, true);
         }
 
-        public ComponentType[] GetComponentTypes()
+        public ComponentType[] GetComponents(SearchType searchType)
         {
             return componentNames
-                .Select(ReflectionUtility.GetTypeByName)
+                .Where(data => data.searchType == searchType)
+                .Select(data => ReflectionUtility.GetTypeByName(data.componentName))
                 .Where(type => type != null)
                 .Select(type =>
                 {
@@ -42,6 +43,18 @@ namespace ECSExtension.Panels
         public void OnCellBorrowed(QueryComponentCell cell)
         {
             cell.OnTextChanged += OnTextChanged;
+            cell.OnSearchTypeChanged += OnSearchTypeChanged;
+        }
+
+        private void OnSearchTypeChanged(int index, int type)
+        {
+            if (index >= 0 && index < componentNames.Count)
+            {
+                componentNames[index].searchType = (SearchType)type;
+            }
+
+            viewportLayout.preferredHeight = ItemCount * 25;
+            scrollPool.Refresh(true, true);
         }
 
         private void OnTextChanged(int index, string text)
@@ -51,11 +64,11 @@ namespace ECSExtension.Panels
                 if (string.IsNullOrEmpty(text))
                     componentNames.RemoveAt(index);
                 else
-                    componentNames[index] = text;
+                    componentNames[index].componentName = text;
             }
             else
             {
-                componentNames.Add(text);
+                componentNames.Add(new SearchData(text));
             }
 
             viewportLayout.preferredHeight = ItemCount * 25;
@@ -67,9 +80,26 @@ namespace ECSExtension.Panels
             if (index >= 0 && index < componentNames.Count)
                 cell.ConfigureCell(index, componentNames[index]);
             else if (index < componentNames.Count + 1)
-                cell.ConfigureCell(index, "");
+                cell.SetCellToDefault(index);
             else
                 cell.Disable();
+        }
+        
+        public class SearchData
+        {
+            public string componentName;
+            public SearchType searchType;
+
+            public SearchData(string componentName)
+            {
+                this.componentName = componentName;
+            }
+        }
+
+        public enum SearchType
+        {
+            Include,
+            Exclude
         }
     }
 }
