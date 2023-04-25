@@ -41,10 +41,10 @@ namespace ECSExtension
             UIRoot = UIFactory.CreateVerticalGroup(parent, "EntityInspector", true, false, true, true, 5,
                 new Vector4(4, 4, 4, 4), new Color(0.065f, 0.065f, 0.065f));
 
-            var scrollObj = UIFactory.CreateScrollView(UIRoot, "EntityInspector", out Content, out var scrollbar,
-                new Color(0.065f, 0.065f, 0.065f));
-            UIFactory.SetLayoutElement(scrollObj, minHeight: 100, preferredHeight: 100, flexibleHeight: 0, flexibleWidth: 9999);
+            Content = UIFactory.CreateVerticalGroup(UIRoot, "TopPane", true, false, true, true, 5,
+                new Vector4(4, 4, 4, 4), new Color(0.065f, 0.065f, 0.065f));
 
+            UIFactory.SetLayoutElement(Content, minHeight: 100, preferredHeight: 100, flexibleHeight: 0, flexibleWidth: 9999);
             UIFactory.SetLayoutGroup<VerticalLayoutGroup>(Content, spacing: 3, padTop: 2, padBottom: 2, padLeft: 2, padRight: 2);
 
             entityInfoPanel = new EntityInfoPanel(this);
@@ -150,6 +150,11 @@ namespace ECSExtension
             }
 
             return null;
+        }
+
+        public ModDynamicBuffer<T> GetDynamicBuffer<T>() where T : unmanaged
+        {
+            return entityManager.GetModBuffer<T>(currentEntity);
         }
 
         public void RemoveComponent(ComponentType type)

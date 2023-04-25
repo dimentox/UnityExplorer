@@ -21,8 +21,7 @@ namespace ECSExtension.Widgets
 
         private string lastName;
         private int lastWorld;
-
-        private Text titleLabel;
+        
         private InputFieldRef NameInput;
         private Toggle ActiveSelfToggle;
         private Text ActiveSelfText;
@@ -60,7 +59,6 @@ namespace ECSExtension.Widgets
 
             if (firstUpdate)
             {
-                titleLabel.text = Owner.GetEntityName();
                 NameInput.Text = GetEntityName();
             }
 
@@ -146,7 +144,7 @@ namespace ECSExtension.Widgets
             GameObject titleRow = UIFactory.CreateUIObject("TitleRow", topInfoHolder);
             UIFactory.SetLayoutGroup<HorizontalLayoutGroup>(titleRow, false, false, true, true, 5);
 
-            titleLabel = UIFactory.CreateLabel(titleRow, "Title", Owner.GetEntityName(), fontSize: 17);
+            Text titleLabel = UIFactory.CreateLabel(titleRow, "Title", SignatureHighlighter.Parse(typeof(Entity), false), fontSize: 17);
             UIFactory.SetLayoutElement(titleLabel.gameObject, minHeight: 30, minWidth: 100);
 
             // name
@@ -155,6 +153,11 @@ namespace ECSExtension.Widgets
             UIFactory.SetLayoutElement(NameInput.Component.gameObject, minHeight: 30, minWidth: 100, flexibleWidth: 9999);
             NameInput.Component.textComponent.fontSize = 15;
             NameInput.Component.GetOnEndEdit().AddListener(val => { OnNameEndEdit(val); });
+            
+            ButtonRef copyButton = UIFactory.CreateButton(titleRow, "CopyButton", "Copy to Clipboard", new Color(0.2f, 0.2f, 0.2f, 1));
+            copyButton.ButtonText.color = Color.yellow;
+            UIFactory.SetLayoutElement(copyButton.Component.gameObject, minHeight: 25, minWidth: 120);
+            copyButton.OnClick += OnCopyClicked;
 
             // second row (toggles, instanceID, tag, buttons)
 
