@@ -19,6 +19,7 @@ namespace UnityExplorer
         public static event Action OnInspectedTabsChanged;
         
         public static List<Func<object, Type>> customInspectors = new List<Func<object, Type>>();
+        public static Dictionary<Type, Func<object, object, bool>> equalityCheckers = new Dictionary<Type, Func<object, object, bool>>();
 
         public static void Inspect(object obj, CacheObjectBase parent = null)
         {
@@ -78,6 +79,9 @@ namespace UnityExplorer
                 else if(inspector.Target.ReferenceEqual(target))
                 {
                     shouldFocus = true;
+                }else if (equalityCheckers.ContainsKey(target.GetType()))
+                {
+                    shouldFocus = equalityCheckers[target.GetType()](inspector.Target, target);
                 }
 
                 if (shouldFocus)

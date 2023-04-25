@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using BepInEx;
 using BepInEx.Unity.IL2CPP;
 using ECSExtension.Panels;
+using ECSExtension.Patch;
+using HarmonyLib;
 using Unity.Entities;
 using UnityExplorer;
 using UnityExplorer.Inspectors;
@@ -29,6 +31,7 @@ namespace ECSExtension
             Harmony.PatchAll(typeof(GameObjectConversionMappingSystem_Patch));
             
             InspectorManager.customInspectors.Add(EntityAdder);
+            InspectorManager.equalityCheckers.Add(typeof(Entity), EntityEqualityChecker);
             UIManager.onInit += UIManagerOnInit;
             Log.LogInfo("Added Entity Inspector");
         }
@@ -38,6 +41,16 @@ namespace ECSExtension
             ObjectExplorerPanel explorerPanel = UIManager.GetPanel<ObjectExplorerPanel>(UIManager.Panels.ObjectExplorer);
             explorerPanel.AddTab(new WorldExplorer(explorerPanel));
             Log.LogInfo("Added World Explorer");
+        }
+
+        private bool EntityEqualityChecker(object o1, object o2)
+        {
+            if (o1 is Entity e1 && o2 is Entity e2)
+            {
+                return e1.Equals(e2);
+            }
+
+            return false;
         }
 
         private Type EntityAdder(object o)
@@ -67,7 +80,8 @@ namespace ECSExtension
                 inspector.CloseInspector();
             }
             
-            InspectorManager.customInspectors.Clear();
+            InspectorManager.customInspectors.Remove(EntityAdder);
+            InspectorManager.equalityCheckers.Remove(typeof(Entity));
             Log.LogInfo("Removed Entity Inspector");
             return true;
         }
