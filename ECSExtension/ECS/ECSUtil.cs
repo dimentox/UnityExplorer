@@ -5,7 +5,7 @@ using Unity.Entities;
 
 namespace ECSExtension.Util
 {
-    public static class ECSUtil
+    public static unsafe class ECSUtil
     {
         public static int GetModTypeIndex<T>()
         {
@@ -17,6 +17,12 @@ namespace ECSExtension.Util
             }
 
             return index;
+        }
+        
+        public const int ClearFlagsMask = 0x007FFFFF;
+        public static ref readonly TypeManager.TypeInfo GetTypeInfo(int typeIndex)
+        {
+            return ref TypeManager.GetTypeInfoPointer()[typeIndex & ClearFlagsMask];
         }
         
         public static ComponentType ReadOnly<T>()
@@ -38,8 +44,8 @@ namespace ECSExtension.Util
             {
                 NativeArray<Entity> entities = entityManager
                     .GetModBuffer<LinkedEntityGroup>(entity)
-                    .Reinterpret<LinkedEntityGroup, Entity>()
-                    .ToNativeArray(Allocator.TempJob);
+                    .Reinterpret<Entity>()
+                    .ToIl2CppNativeArray(Allocator.TempJob);
                 if (enabled)
                 {
                     entityManager.RemoveComponent(entities, componentType);
@@ -65,14 +71,7 @@ namespace ECSExtension.Util
             string name = fixedString.Value;
             return string.IsNullOrEmpty(name) ? entity.ToString() : name;
         }
-        
-        public static unsafe DynamicBuffer<U> Reinterpret<T, U>(this DynamicBuffer<T> buffer) 
-            where U : unmanaged
-            where T : unmanaged
-        {
-            return new DynamicBuffer<U>(buffer.m_Buffer, buffer.m_InternalCapacity);
-        }
-        
+
         public static bool IsEntityEnabled(EntityManager entityManager, Entity entity)
         {
             return !entityManager.HasComponent(entity, ReadOnly<Disabled>());
@@ -87,7 +86,7 @@ namespace ECSExtension.Util
         /// <typeparam name="T">The type of the buffer's elements.</typeparam>
         /// <returns>The DynamicBuffer object for accessing the buffer contents.</returns>
         /// <exception cref="ArgumentException">Thrown if T is an unsupported type.</exception>
-        public static unsafe DynamicBuffer<T> GetModBuffer<T>(this EntityManager entityManager, Entity entity, bool isReadOnly = false) where T : unmanaged
+        public static ModDynamicBuffer<T> GetModBuffer<T>(this EntityManager entityManager, Entity entity, bool isReadOnly = false) where T : unmanaged
         {
             var typeIndex = GetModTypeIndex<T>();
             var access = entityManager.GetCheckedEntityDataAccess();
@@ -110,11 +109,11 @@ namespace ECSExtension.Util
                 header = (BufferHeader*) access->EntityComponentStore->GetComponentDataWithTypeRW(entity, typeIndex, access->EntityComponentStore->GlobalSystemVersion);
             }
 
-            int internalCapacity = TypeManager.GetTypeInfo(typeIndex).BufferCapacity;
-            return new DynamicBuffer<T>(header, internalCapacity);
+            int internalCapacity = GetTypeInfo(typeIndex).BufferCapacity;
+            return new ModDynamicBuffer<T>(header, internalCapacity);
         }
 
-        public static unsafe T GetModComponentData<T>(this EntityManager entityManager, Entity entity)
+        public static T GetModComponentData<T>(this EntityManager entityManager, Entity entity)
         {
             int typeIndex = GetModTypeIndex<T>();
             var dataAccess = entityManager.GetCheckedEntityDataAccess();
@@ -142,7 +141,7 @@ namespace ECSExtension.Util
         /// <param name="entityManager">World EntityManager</param>
         /// <param name="component">Component Data</param>
         /// <typeparam name="T">Component Type</typeparam>
-        public static unsafe void SetModComponentData<T>(this EntityManager entityManager, Entity entity, T component)
+        public static void SetModComponentData<T>(this EntityManager entityManager, Entity entity, T component)
         {
             int typeIndex = GetModTypeIndex<T>();
             var dataAccess = entityManager.GetCheckedEntityDataAccess();
@@ -162,7 +161,7 @@ namespace ECSExtension.Util
             Unsafe.Copy(writePtr, ref component);
         }
         
-        public static unsafe bool HasModComponent<T>(this EntityManager entityManager, Entity entity)
+        public static bool HasModComponent<T>(this EntityManager entityManager, Entity entity)
         {
             ComponentType componentType = ComponentType.FromTypeIndex(GetModTypeIndex<T>());
             var dataAccess = entityManager.GetCheckedEntityDataAccess();

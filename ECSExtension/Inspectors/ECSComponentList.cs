@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using ECSExtension.Util;
 using HarmonyLib;
 using Unity.Collections;
 using Unity.Entities;
@@ -60,8 +61,19 @@ namespace ECSExtension
 
         private void InspectComponent<T>() where T : unmanaged
         {
-            CacheComponent<T> data = Parent.GetComponentData<T>();
-            InspectorManager.Inspect(data.TryEvaluate(), data);
+            ComponentType type = ECSUtil.ReadOnly<T>();
+            var category = ECSUtil.GetTypeInfo(type.TypeIndex).Category;
+
+            if (category == TypeManager.TypeCategory.BufferData)
+            {
+                ModDynamicBuffer<T> dynamicBuffer = Parent.GetDynamicBuffer<T>();
+                InspectorManager.Inspect(new BufferView<T>(dynamicBuffer));
+            }
+            else
+            {
+                CacheComponent<T> data = Parent.GetComponentData<T>();
+                InspectorManager.Inspect(data.TryEvaluate(), data);
+            }
         }
 
         private void OnDestroyClicked(int index)
@@ -90,10 +102,7 @@ namespace ECSExtension
 
             try
             {
-                var comp = entries[index];
-                Type type = comp.GetManagedType();
-
-                cell.Button.ButtonText.text = type.ToString();
+                cell.ConfigureCell(entries[index]);
             }
             catch (Exception e)
             {
