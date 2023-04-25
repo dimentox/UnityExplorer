@@ -218,7 +218,7 @@ namespace UnityExplorer.Inspectors
                 if (this.UnityWidget != null)
                     UnityWidget.Update();
 
-                if (AutoUpdateWanted){}
+                if (AutoUpdateWanted)
                     UpdateDisplayedMembers();
             }
         }
