@@ -19,10 +19,15 @@ namespace ECSExtension
 
         public const string PLUGIN_GUID = "org.kremnev8.plugin.ecs-inspector-extension";
 
-        public const string VERSION = "1.0.0";
+        public const string VERSION = "1.0.1";
+
+        public Harmony Harmony;
         
         public override void Load()
         {
+            Harmony = new Harmony(PLUGIN_GUID);
+            Harmony.PatchAll(typeof(GameObjectConversionMappingSystem_Patch));
+            
             InspectorManager.customInspectors.Add(EntityAdder);
             UIManager.onInit += UIManagerOnInit;
             Log.LogInfo("Added Entity Inspector");
@@ -47,6 +52,7 @@ namespace ECSExtension
 
         public override bool Unload()
         {
+            Harmony.UnpatchSelf();
             List<InspectorBase> entityInspectors = new List<InspectorBase>();
             foreach (InspectorBase inspector in InspectorManager.Inspectors)
             {
