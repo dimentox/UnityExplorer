@@ -15,6 +15,7 @@ This version was forked, and only supports Bleeding Edge BepInEx builds on DOTS 
 BepInEx:
 
 1. Take the `UnityExplorer.BIE.[version].dll` file and the `UniverseLib.[version].dll` file and put them in `BepInEx\plugins\`.
+
 Also ensure you are using BepInEx from [here](https://core-keeper.thunderstore.io/package/BepInEx/BepInExPack_Core_Keeper/) or build with Il2CppInterop with [this PR](https://github.com/BepInEx/Il2CppInterop/pull/70).
 
 # Features
