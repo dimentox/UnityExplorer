@@ -73,11 +73,7 @@ namespace ECSExtension.Widgets
 
         public string GetEntityName()
         {
-            Owner.entityManager.GetName(Target, out FixedString64Bytes fixedString);
-            string name = fixedString.Value;
-            if (string.IsNullOrEmpty(name))
-                return Target.ToString();
-            return fixedString.Value;
+            return ECSUtil.GetName(Owner.entityManager, Target);
         }
 
         public bool IsEntityEnabled()
@@ -89,7 +85,7 @@ namespace ECSExtension.Widgets
 
         void OnNameEndEdit(string value)
         {
-            Owner.entityManager.SetName(Target, value);
+            ECSUtil.SetName(Owner.entityManager, Target, value);
             UpdateEntityInfo(false, true);
         }
 

@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.CompilerServices;
+using HarmonyLib;
 using Unity.Collections;
 using Unity.Entities;
 
@@ -65,11 +66,41 @@ namespace ECSExtension.Util
             entityManager.RemoveComponent(entity, componentType);
         }
         
-        public static string GetName(Entity entity, EntityManager entityManager)
+        public static string GetName(EntityManager entityManager, Entity entity)
         {
-            entityManager.GetName(entity, out FixedString64Bytes fixedString);
-            string name = fixedString.Value;
-            return string.IsNullOrEmpty(name) ? entity.ToString() : name;
+            string result = "";
+            var method1 = typeof(EntityManager).GetMethod("GetName", AccessTools.all, new[] { typeof(Entity) });
+            if (method1 != null)
+            {
+                result = (string)method1.Invoke(entityManager, new object[] { entity });
+            }
+            
+            var method2 = typeof(EntityManager).GetMethod("GetName", AccessTools.all, new[] { typeof(Entity), typeof(FixedString64Bytes).MakeByRefType() });
+            if (method2 != null)
+            {
+                object[] args = { entity, new FixedString64Bytes("") };
+                method1.Invoke(entityManager, args);
+                result = ((FixedString64Bytes)args[1]).Value;
+            }
+            
+            return string.IsNullOrEmpty(result) ? entity.ToString() : result;
+        }
+
+        public static void SetName(EntityManager entityManager, Entity entity, string name)
+        {
+            var method1 = typeof(EntityManager).GetMethod("SetName", AccessTools.all, new[] { typeof(Entity), typeof(string) });
+            if (method1 != null)
+            {
+                method1.Invoke(entityManager, new object[] { entity, name });
+                return;
+            }
+            
+            var method2 = typeof(EntityManager).GetMethod("SetName", AccessTools.all, new[] { typeof(Entity), typeof(FixedString64Bytes) });
+            if (method2 != null)
+            {
+                FixedString64Bytes strBytes = new FixedString64Bytes(name);
+                method1.Invoke(entityManager, new object[] { entity, strBytes });
+            }
         }
 
         public static bool IsEntityEnabled(EntityManager entityManager, Entity entity)

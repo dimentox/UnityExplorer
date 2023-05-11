@@ -64,7 +64,7 @@ namespace ECSExtension.Panels
             if (string.IsNullOrEmpty(currentFilter))
                 entities = nativeArray;
             else
-                entities = nativeArray.Where(entity => ECSUtil.GetName(entity, world.EntityManager).Contains(currentFilter, StringComparison.InvariantCultureIgnoreCase)).ToList();
+                entities = nativeArray.Where(entity => ECSUtil.GetName(world.EntityManager, entity).Contains(currentFilter, StringComparison.InvariantCultureIgnoreCase)).ToList();
 
             if (refresh)
                 ScrollPool.Refresh(true, true);

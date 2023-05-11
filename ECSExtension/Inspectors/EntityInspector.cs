@@ -95,7 +95,7 @@ namespace ECSExtension
         public string GetEntityName()
         {
             if (currentWorld == null) return currentEntity.ToString();
-            return ECSUtil.GetName(currentEntity, currentWorld.EntityManager);
+            return ECSUtil.GetName(currentWorld.EntityManager, currentEntity);
         }
 
         public void SetWorld(int index)

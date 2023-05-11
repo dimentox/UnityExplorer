@@ -32,7 +32,7 @@ namespace ECSExtension
         public void ConfigureCell(Entity entity, EntityManager entityManager)
         {
             this.entity = entity;
-            NameButton.ButtonText.text = ECSUtil.GetName(entity, entityManager);
+            NameButton.ButtonText.text = ECSUtil.GetName(entityManager, entity);
             EnabledToggle.Set(!entityManager.HasModComponent<Disabled>(entity), false);
         }
         

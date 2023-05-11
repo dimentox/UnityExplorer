@@ -1,5 +1,8 @@
 ## Changelog
 
+### 4.10.3
+- Fix issues when `GetName` or `SetName` are stripped
+
 ### 4.10.2
 - Allow inspecting Buffer components
 - Add more filters for World Explorer
