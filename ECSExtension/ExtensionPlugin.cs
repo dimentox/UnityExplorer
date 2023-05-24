@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
 using BepInEx;
+using BepInEx.Logging;
 using BepInEx.Unity.IL2CPP;
 using ECSExtension.Panels;
 using ECSExtension.Patch;
+using ECSExtension.Util;
 using HarmonyLib;
 using Unity.Entities;
 using UnityExplorer;
@@ -21,14 +23,19 @@ namespace ECSExtension
 
         public const string PLUGIN_GUID = "org.kremnev8.plugin.ecs-inspector-extension";
 
-        public const string VERSION = "1.0.1";
+        public const string VERSION = "1.0.2";
 
-        public Harmony Harmony;
+        public static Harmony Harmony;
+
+        public static ManualLogSource logger;
         
         public override void Load()
         {
+            logger = Log;
             Harmony = new Harmony(PLUGIN_GUID);
             Harmony.PatchAll(typeof(GameObjectConversionMappingSystem_Patch));
+            
+            ECSUtil.Init();
             
             InspectorManager.customInspectors.Add(EntityAdder);
             InspectorManager.equalityCheckers.Add(typeof(Entity), EntityEqualityChecker);

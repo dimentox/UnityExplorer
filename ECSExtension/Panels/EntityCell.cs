@@ -33,7 +33,7 @@ namespace ECSExtension
         {
             this.entity = entity;
             NameButton.ButtonText.text = ECSUtil.GetName(entityManager, entity);
-            EnabledToggle.Set(!entityManager.HasModComponent<Disabled>(entity), false);
+            EnabledToggle.Set(ECSUtil.IsEntityEnabled(entityManager, entity), false);
         }
         
         private void MainButtonClicked()

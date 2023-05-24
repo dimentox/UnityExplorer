@@ -1,5 +1,11 @@
 ## Changelog
 
+### 4.10.4
+- Add support for ECS v0.17. Some features might not work on it, like name system.
+
+<details>
+<summary>All changes</summary>
+
 ### 4.10.3
 - Fix issues when `GetName` or `SetName` are stripped
 
@@ -8,9 +14,6 @@
 - Add more filters for World Explorer
 - Fixed that reflection inspector always refreshed
 - Fixed that new tabs were opened for existing entities
-
-<details>
-<summary>All changes</summary>
 
 ### 4.10.1
 - Fixed issue where Entity Inspector Tabs did not have [ECS] in their name.

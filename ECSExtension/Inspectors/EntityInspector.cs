@@ -68,7 +68,7 @@ namespace ECSExtension
             validWorlds = new List<World>();
             foreach (World world in World.All)
             {
-                if (world.EntityManager.Exists(currentEntity))
+                if (world.EntityManager.ExistsSafe(currentEntity))
                 {
                     validWorlds.Add(world);
                 }

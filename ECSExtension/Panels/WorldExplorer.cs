@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using ECSExtension.Util;
 using Il2CppInterop.Runtime;
 using Il2CppSystem;
 using Unity.Entities;
@@ -24,9 +25,8 @@ namespace ECSExtension.Panels
         {
             Parent = parent;
             
-            var @delegate = DelegateSupport.ConvertDelegate<Action<World>>(OnWorldStateChanged);
-            World.WorldCreated += @delegate;
-            World.WorldDestroyed += @delegate;
+            ECSUtil.WorldCreated += OnWorldStateChanged;
+            ECSUtil.WorldDestroyed += OnWorldStateChanged;
         }
 
         public override GameObject UIRoot => uiRoot;
@@ -121,6 +121,7 @@ namespace ECSExtension.Panels
         
         private void DoQuery()
         {
+            PopulateWorldDropdown(World.All.m_Source);
             ComponentType[] include = queryComponentList.GetComponents(QueryComponentList.SearchType.Include);
             ComponentType[] exclude = queryComponentList.GetComponents(QueryComponentList.SearchType.Exclude);
             bool includeDisabled = includDisabledToggle.isOn;
