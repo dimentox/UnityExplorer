@@ -1,10 +1,13 @@
 ## Changelog
 
-### 4.10.4
-- Add support for ECS v0.17. Some features might not work on it, like name system.
+### 4.10.5
+- Add ECS Unity Explorer to VRising community
 
 <details>
 <summary>All changes</summary>
+
+### 4.10.4
+- Add support for ECS v0.17. Some features might not work on it, like name system.
 
 ### 4.10.3
 - Fix issues when `GetName` or `SetName` are stripped

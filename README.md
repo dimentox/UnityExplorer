@@ -1,9 +1,8 @@
 # UnityExplorer
 
-This version was forked, and only supports Bleeding Edge BepInEx builds on DOTS based games. Make sure to use BepInEx build from Core Keeper TS, as it's custom at the moment.
+This version was forked, and only supports Bleeding Edge BepInEx builds on DOTS based games. Make sure to use BepInEx build compatible with [DOTS PR](https://github.com/BepInEx/Il2CppInterop/pull/70)
 
 🔍 An in-game UI for exploring, debugging and modifying Unity games.
-✔️ Supports most Unity versions from 5.2 to 2021+ (IL2CPP and Mono).
 
 
 [Current GitHub](https://github.com/kremnev8/UnityExplorer)
