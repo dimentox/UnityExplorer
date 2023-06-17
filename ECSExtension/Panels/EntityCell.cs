@@ -4,6 +4,7 @@ using Unity.Entities;
 using UnityEngine;
 using UnityEngine.UI;
 using UniverseLib;
+using UniverseLib.Runtime;
 using UniverseLib.UI;
 using UniverseLib.UI.Models;
 using UniverseLib.UI.ObjectPool;
@@ -32,8 +33,8 @@ namespace ECSExtension
         public void ConfigureCell(Entity entity, EntityManager entityManager)
         {
             this.entity = entity;
-            NameButton.ButtonText.text = ECSUtil.GetName(entityManager, entity);
-            EnabledToggle.Set(ECSUtil.IsEntityEnabled(entityManager, entity), false);
+            NameButton.ButtonText.text = ECSHelper.GetName(entityManager, entity);
+            EnabledToggle.Set(ECSHelper.IsEntityEnabled(entityManager, entity), false);
         }
         
         private void MainButtonClicked()
@@ -86,10 +87,10 @@ namespace ECSExtension
 
             // Setup selectables
 
-            Color normal = new(0.11f, 0.11f, 0.11f);
-            Color highlight = new(0.25f, 0.25f, 0.25f);
-            Color pressed = new(0.05f, 0.05f, 0.05f);
-            Color disabled = new(1, 1, 1, 0);
+            Color normal = new Color(0.11f, 0.11f, 0.11f);
+            Color highlight = new Color(0.25f, 0.25f, 0.25f);
+            Color pressed = new Color(0.05f, 0.05f, 0.05f);
+            Color disabled = new Color(1, 1, 1, 0);
             RuntimeHelper.SetColorBlock(NameButton.Component, normal, highlight, pressed, disabled);
 
             NameButton.OnClick += MainButtonClicked;

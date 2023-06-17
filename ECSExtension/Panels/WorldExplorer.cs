@@ -1,8 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using ECSExtension.Util;
-using Il2CppInterop.Runtime;
-using Il2CppSystem;
 using Unity.Entities;
 using UnityEngine;
 using UnityEngine.UI;
@@ -10,10 +8,16 @@ using UnityExplorer;
 using UnityExplorer.ObjectExplorer;
 using UnityExplorer.UI.Panels;
 using UniverseLib;
+using UniverseLib.Runtime;
 using UniverseLib.UI;
 using UniverseLib.UI.Models;
 using UniverseLib.UI.Widgets.ScrollView;
 using UniverseLib.Utility;
+
+#if CPP
+using Il2CppInterop.Runtime;
+using Il2CppSystem;
+#endif
 
 namespace ECSExtension.Panels
 {
@@ -25,8 +29,8 @@ namespace ECSExtension.Panels
         {
             Parent = parent;
             
-            ECSUtil.WorldCreated += OnWorldStateChanged;
-            ECSUtil.WorldDestroyed += OnWorldStateChanged;
+            ECSHelper.WorldCreated += OnWorldStateChanged;
+            ECSHelper.WorldDestroyed += OnWorldStateChanged;
         }
 
         public override GameObject UIRoot => uiRoot;
@@ -36,7 +40,7 @@ namespace ECSExtension.Panels
 
         //private GameObject refreshRow;
         private Dropdown sceneDropdown;
-        private readonly Dictionary<World, Dropdown.OptionData> sceneToDropdownOption = new();
+        private readonly Dictionary<World, Dropdown.OptionData> sceneToDropdownOption = new Dictionary<World, Dropdown.OptionData>();
         
         // scene loader
         private World _selectedWorld;
@@ -71,8 +75,11 @@ namespace ECSExtension.Panels
         {
             if (value < 0 || World.All.m_Source.Count <= value)
                 return;
-
+#if CPP
             SelectedWorld = World.All.m_Source._items[value];
+#else
+            SelectedWorld = World.All.m_Source[value];
+#endif
             Tree.RefreshData(true);
         }
 
@@ -96,8 +103,11 @@ namespace ECSExtension.Panels
         {
             UpdateTree();
         }
-
+#if CPP
         private void PopulateWorldDropdown(Il2CppSystem.Collections.Generic.List<World> loadedScenes)
+#else
+        private void PopulateWorldDropdown(List<World> loadedScenes)
+#endif
         {
             sceneToDropdownOption.Clear();
             sceneDropdown.options.Clear();
@@ -112,7 +122,7 @@ namespace ECSExtension.Panels
                 if (string.IsNullOrEmpty(name))
                     name = "<untitled>";
 
-                Dropdown.OptionData option = new(name);
+                Dropdown.OptionData option = new Dropdown.OptionData(name);
                 sceneDropdown.options.Add(option);
                 sceneToDropdownOption.Add(world, option);
             }
@@ -216,7 +226,11 @@ namespace ECSExtension.Panels
             UIFactory.SetLayoutElement(scrollContent, flexibleHeight: 9999);
 
             Tree = new EntityTree(scrollPool, OnCellClicked);
+#if CPP
             SelectedWorld = World.All.m_Source._items.First();
+#else
+            SelectedWorld = World.All.m_Source.First();
+#endif
             Tree.RefreshData(true);
         }
     }

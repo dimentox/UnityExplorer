@@ -1,10 +1,13 @@
 using System.Collections.Generic;
 using System.Linq;
-using Il2CppInterop.Runtime;
 using Unity.Entities;
 using UnityEngine.UI;
 using UniverseLib;
 using UniverseLib.UI.Widgets.ScrollView;
+
+#if CPP
+using Il2CppInterop.Runtime;
+#endif
 
 namespace ECSExtension.Panels
 {
@@ -20,7 +23,7 @@ namespace ECSExtension.Panels
             this.scrollPool = scrollPool;
             this.viewportLayout = viewportLayout;
             scrollPool.Initialize(this);
-            var sliderContainer = this.scrollPool.UIRoot.transform.FindChild("SliderContainer").gameObject;
+            var sliderContainer = this.scrollPool.UIRoot.transform.Find("SliderContainer").gameObject;
             sliderContainer.SetActive(false);
             scrollPool.Refresh(true, true);
         }
@@ -33,8 +36,12 @@ namespace ECSExtension.Panels
                 .Where(type => type != null)
                 .Select(type =>
                 {
+#if CPP
                     var il2cppType = Il2CppType.From(type);
                     return TypeManager.GetTypeIndex(il2cppType);
+#else
+                    return TypeManager.GetTypeIndex(type);
+#endif
                 })
                 .Where(index => index >= 0)
                 .Select(ComponentType.FromTypeIndex).ToArray();

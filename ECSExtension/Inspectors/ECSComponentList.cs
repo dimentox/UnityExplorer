@@ -6,8 +6,12 @@ using Unity.Collections;
 using Unity.Entities;
 using UnityExplorer;
 using UniverseLib;
+using UniverseLib.Runtime;
 using UniverseLib.UI.Widgets.ScrollView;
+
+#if CPP
 using Type = Il2CppSystem.Type;
+#endif
 
 namespace ECSExtension
 {
@@ -52,8 +56,11 @@ namespace ECSExtension
         private void InvokeForComponent(ComponentType comp, string methodName)
         {
             Type componentType = comp.GetManagedType();
+#if CPP
             System.Type monoType = Il2CppReflection.GetUnhollowedType(componentType);
-
+#else
+            Type monoType = componentType;
+#endif
             var method = typeof(ECSComponentList).GetMethod(methodName, AccessTools.all);
             method.MakeGenericMethod(monoType)
                 .Invoke(this, Array.Empty<object>());
@@ -61,8 +68,8 @@ namespace ECSExtension
 
         private void InspectComponent<T>() where T : unmanaged
         {
-            ComponentType type = ECSUtil.ReadOnly<T>();
-            var category = ECSUtil.GetTypeInfo(type.TypeIndex).Category;
+            ComponentType type = ECSHelper.ReadOnly<T>();
+            var category = ECSHelper.GetTypeInfo(type.TypeIndex).Category;
 
             if (category == TypeManager.TypeCategory.BufferData)
             {

@@ -8,6 +8,7 @@ using UnityEngine.UI;
 using UnityExplorer;
 using UnityExplorer.UI.Panels;
 using UniverseLib;
+using UniverseLib.Runtime;
 using UniverseLib.UI;
 using UniverseLib.UI.Models;
 using UniverseLib.Utility;
@@ -73,7 +74,7 @@ namespace ECSExtension.Widgets
 
         public string GetEntityName()
         {
-            return ECSUtil.GetName(Owner.entityManager, Target);
+            return ECSHelper.GetName(Owner.entityManager, Target);
         }
 
         public bool IsEntityEnabled()
@@ -85,7 +86,7 @@ namespace ECSExtension.Widgets
 
         void OnNameEndEdit(string value)
         {
-            ECSUtil.SetName(Owner.entityManager, Target, value);
+            ECSHelper.SetName(Owner.entityManager, Target, value);
             UpdateEntityInfo(false, true);
         }
 
@@ -96,7 +97,7 @@ namespace ECSExtension.Widgets
 
         void OnActiveSelfToggled(bool value)
         {
-            ECSUtil.SetEnabled(Owner.entityManager, Target, value);
+            Owner.entityManager.SetEnabled(Target, value);
             UpdateEntityInfo(false, true);
         }
 

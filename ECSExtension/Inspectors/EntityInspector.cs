@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using ECSExtension.Util;
 using ECSExtension.Widgets;
-using Il2CppInterop.Runtime;
 using Unity.Collections;
 using Unity.Entities;
 using UnityEngine;
@@ -14,9 +13,14 @@ using UnityExplorer.Inspectors;
 using UnityExplorer.UI.Panels;
 using UnityExplorer.UI.Widgets.AutoComplete;
 using UniverseLib;
+using UniverseLib.Runtime;
 using UniverseLib.UI;
 using UniverseLib.UI.Models;
 using UniverseLib.UI.Widgets.ScrollView;
+
+#if CPP
+using Il2CppInterop.Runtime;
+#endif
 
 namespace ECSExtension
 {
@@ -95,7 +99,7 @@ namespace ECSExtension
         public string GetEntityName()
         {
             if (currentWorld == null) return currentEntity.ToString();
-            return ECSUtil.GetName(currentWorld.EntityManager, currentEntity);
+            return ECSHelper.GetName(currentWorld.EntityManager, currentEntity);
         }
 
         public void SetWorld(int index)
@@ -169,8 +173,11 @@ namespace ECSExtension
             {
                 try
                 {
-                    Il2CppSystem.Type il2cpptype = Il2CppType.From(type);
-                    int index = TypeManager.GetTypeIndex(il2cpptype);
+#if CPP
+                    int index = TypeManager.GetTypeIndex(Il2CppType.From(type));
+#else
+                    int index = TypeManager.GetTypeIndex(type);
+#endif
                     if (index > 0)
                     {
                         entityManager.AddComponent(currentEntity, ComponentType.FromTypeIndex(index));

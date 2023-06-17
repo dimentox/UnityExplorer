@@ -1,28 +1,41 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-        <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
         <ProjectGuid>{059CD83D-15DA-40DB-9402-372601D61878}</ProjectGuid>
         <OutputType>Library</OutputType>
         <AppDesignerFolder>Properties</AppDesignerFolder>
         <RootNamespace>ECSExtension</RootNamespace>
         <AssemblyName>ECSExtension</AssemblyName>
-        <TargetFramework>net6</TargetFramework>
-        <Configurations>BIE_Cpp_CoreCLR</Configurations>
+        <Configurations>BIE_Cpp_CoreCLR;BIE5_Mono</Configurations>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
         <GenerateDependencyFile>false</GenerateDependencyFile>
         <PathMap>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)'))=./</PathMap>
+        <Platforms>AnyCPU</Platforms>
     </PropertyGroup>
     <!-- BEPINEX IL2CPP CoreCLR -->
-    <PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)'=='BIE_Cpp_CoreCLR'">
         <TargetFramework>net6</TargetFramework>
         <OutputPath>..\Release\UnityExplorer.BepInEx.IL2CPP.CoreCLR\</OutputPath>
         <DefineConstants>CPP,BIE,BIE6,INTEROP</DefineConstants>
         <AssemblyName>ECSExtension</AssemblyName>
     </PropertyGroup>
+    <!-- BEPINEX 6 MONO -->
+    <PropertyGroup Condition="'$(Configuration)'=='BIE6_Mono'">
+        <TargetFramework>netstandard2.1</TargetFramework>
+        <OutputPath>..\Release\UnityExplorer.BepInEx6.Mono\</OutputPath>
+        <DefineConstants>MONO,BIE,BIE6</DefineConstants>
+        <AssemblyName>ECSExtension</AssemblyName>
+    </PropertyGroup>
+    <!-- BEPINEX 5 MONO -->
+    <PropertyGroup Condition="'$(Configuration)'=='BIE5_Mono'">
+        <TargetFramework>netstandard2.1</TargetFramework>
+        <OutputPath>..\Release\UnityExplorer.BepInEx5.Mono\</OutputPath>
+        <DefineConstants>MONO,BIE,BIE5</DefineConstants> 
+        <AssemblyName>ECSExtension</AssemblyName>
+    </PropertyGroup>
+
     <!-- net6 -->
-    <ItemGroup>
+    <ItemGroup Condition="'$(Configuration)'=='BIE_Cpp_CoreCLR'">
         <Reference Include="mcs">
             <HintPath>..\lib\net6\mcs.dll</HintPath>
             <Private>False</Private>
@@ -86,15 +99,8 @@
         <Reference Include="Unity.Physics.Hybrid">
             <HintPath>..\lib\interop\ECS\Unity.Physics.Hybrid.dll</HintPath>
             <Private>False</Private>
-        </Reference>
-        <Reference Include="UniverseLib.IL2CPP.Interop">
-            <HintPath>..\lib\net6\UniverseLib.IL2CPP.Interop.dll</HintPath>
-            <Private>False</Private>
-        </Reference>
-    </ItemGroup>
+        </Reference> 
 
-    <!-- Il2Cpp Interop -->
-    <ItemGroup>
         <Reference Include="Il2Cppmscorlib">
             <HintPath>..\lib\interop\Il2Cppmscorlib.dll</HintPath>
             <Private>False</Private>
@@ -137,11 +143,120 @@
         </Reference>
     </ItemGroup>
 
-    <ItemGroup>
-        <PackageReference Include="BepInEx.Core" Version="6.0.0-be*" PrivateAssets="all"/>
-        <PackageReference Include="BepInEx.Unity.IL2CPP" Version="6.0.0-be*" PrivateAssets="all"/>
-        <PackageReference Include="Il2CppInterop.Common" Version="1.5.0-dots"/>
-        <PackageReference Include="Il2CppInterop.Runtime" Version="1.5.0-dots"/>
+    <ItemGroup Condition="'$(Configuration)'=='BIE_Cpp_CoreCLR'">
+        <PackageReference Include="BepInEx.Core" Version="6.0.0-be*" PrivateAssets="all" />
+        <PackageReference Include="BepInEx.Unity.IL2CPP" Version="6.0.0-be*" PrivateAssets="all" />
+        <PackageReference Include="Il2CppInterop.Common" Version="1.5.0-dots" />
+        <PackageReference Include="Il2CppInterop.Runtime" Version="1.5.0-dots" />
+
+    </ItemGroup>
+        
+    <ItemGroup Condition="'$(Configuration)'=='BIE5_Mono'">
+        <Reference Include="mcs">
+            <HintPath>..\lib\net35\mcs.dll</HintPath>
+            <Private>True</Private>
+        </Reference>
+        
+        <Reference Include="UnityEngine">
+            <HintPath>..\lib\net35\UnityEngine.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
+        <Reference Include="UnityEngine.CoreModule">
+            <HintPath>..\lib\net35\UnityEngine.CoreModule_publicized.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
+        <Reference Include="UnityEngine.AssetBundleModule">
+            <HintPath>..\lib\net35\UnityEngine.AssetBundleModule_publicized.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
+        <Reference Include="UnityEngine.IMGUIModule">
+            <HintPath>..\lib\net35\UnityEngine.IMGUIModule_publicized.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
+        <Reference Include="UnityEngine.PhysicsModule">
+            <HintPath>..\lib\net35\UnityEngine.PhysicsModule_publicized.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
+        <Reference Include="UnityEngine.TextRenderingModule">
+            <HintPath>..\lib\net35\UnityEngine.TextRenderingModule_publicized.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
+        <Reference Include="UnityEngine.UIModule">
+            <HintPath>..\lib\net35\UnityEngine.UIModule.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
+        <Reference Include="UnityEngine.UI">
+            <HintPath>..\lib\net35\UnityEngine.UI.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
+
+        <Reference Include="Unity.Burst">
+            <HintPath>..\lib\net35\ECS\Unity.Burst.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
+        <Reference Include="Unity.Burst.Unsafe">
+            <HintPath>..\lib\net35\ECS\Unity.Burst.Unsafe.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
+        <Reference Include="Unity.Collections">
+            <HintPath>..\lib\net35\ECS\Unity.Collections.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
+        <Reference Include="Unity.Collections.LowLevel.ILSupport">
+            <HintPath>..\lib\net35\ECS\Unity.Collections.LowLevel.ILSupport.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
+        <Reference Include="Unity.Entities">
+            <HintPath>..\lib\net35\ECS\Unity.Entities.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
+        <Reference Include="Unity.Entities.Hybrid">
+            <HintPath>..\lib\net35\ECS\Unity.Entities.Hybrid.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
+        <Reference Include="Unity.Entities.Hybrid.HybridComponents">
+            <HintPath>..\lib\net35\ECS\Unity.Entities.Hybrid.HybridComponents.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
+        <Reference Include="Unity.Mathematics">
+            <HintPath>..\lib\net35\ECS\Unity.Mathematics.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
+        <Reference Include="Unity.Mathematics.Extensions">
+            <HintPath>..\lib\net35\ECS\Unity.Mathematics.Extensions.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
+        <Reference Include="Unity.NetCode">
+            <HintPath>..\lib\net35\ECS\Unity.NetCode.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
+        <Reference Include="Unity.NetCode.Authoring.Hybrid">
+            <HintPath>..\lib\net35\ECS\Unity.NetCode.Authoring.Hybrid.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
+        <Reference Include="Unity.NetCode.Physics">
+            <HintPath>..\lib\net35\ECS\Unity.NetCode.Physics.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
+        <Reference Include="Unity.Networking.Transport">
+            <HintPath>..\lib\net35\ECS\Unity.Networking.Transport.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
+        <Reference Include="Unity.Physics">
+            <HintPath>..\lib\net35\ECS\Unity.Physics.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
+        <Reference Include="Unity.Physics.Hybrid">
+            <HintPath>..\lib\net35\ECS\Unity.Physics.Hybrid.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(Configuration)'=='BIE5_Mono'">
+        <Reference Include="BepInEx">
+            <HintPath>..\lib\net35\BepInEx.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
 
     </ItemGroup>
 

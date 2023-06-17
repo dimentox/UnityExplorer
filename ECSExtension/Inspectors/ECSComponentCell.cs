@@ -3,9 +3,14 @@ using ECSExtension.Util;
 using Unity.Entities;
 using UnityEngine;
 using UnityEngine.UI;
+using UniverseLib.Runtime;
 using UniverseLib.UI;
 using UniverseLib.UI.Models;
 using UniverseLib.UI.Widgets.ButtonList;
+
+#if CPP
+using Type = Il2CppSystem.Type;
+#endif
 
 namespace ECSExtension
 {
@@ -18,8 +23,8 @@ namespace ECSExtension
 
         public void ConfigureCell(ComponentType type)
         {
-            Il2CppSystem.Type monoType = type.GetManagedType();
-            TypeManager.TypeInfo typeInfo = ECSUtil.GetTypeInfo(type.TypeIndex);
+            Type monoType = type.GetManagedType();
+            TypeManager.TypeInfo typeInfo = ECSHelper.GetTypeInfo(type.TypeIndex);
             
             Button.ButtonText.text = monoType.ToString();
             typeLabel.text = GetCategoryText(typeInfo.Category);

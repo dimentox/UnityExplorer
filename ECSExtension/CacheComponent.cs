@@ -4,6 +4,7 @@ using Unity.Entities;
 using UnityExplorer;
 using UnityExplorer.CacheObject;
 using UnityExplorer.CacheObject.Views;
+using UniverseLib.Runtime;
 
 namespace ECSExtension
 {
@@ -28,9 +29,8 @@ namespace ECSExtension
 
         public override void TrySetUserValue(object value)
         {
-            if (value.GetType().IsAssignableTo(typeof(T)))
+            if (value is T component)
             {
-                T component = (T)value;
                 entityManager.SetModComponentData(entity, component);
             }
         }

@@ -9,8 +9,8 @@ namespace ECSExtension.Patch
         [HarmonyPatch(typeof(GameObjectConversionMappingSystem), nameof(GameObjectConversionMappingSystem.InitArchetypes))]
         [HarmonyPostfix]
         public static void OnCreate(GameObjectConversionMappingSystem __instance)
-        {
-            __instance._Settings_k__BackingField.ConversionFlags |= GameObjectConversionUtility.ConversionFlags.AssignName;
+        { 
+            __instance.Settings.ConversionFlags |= GameObjectConversionUtility.ConversionFlags.AssignName;
         }
     }
 }

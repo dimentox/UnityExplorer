@@ -28,10 +28,10 @@
         <OutputPath>..\Release\UnityExplorer.MelonLoader.IL2CPP\</OutputPath>
         <DefineConstants>CPP,ML,UNHOLLOWER</DefineConstants>
         <AssemblyName>UnityExplorer.ML.IL2CPP</AssemblyName>
-    </PropertyGroup>
+    </PropertyGroup> 
     <!-- ML MONO -->
     <PropertyGroup Condition="'$(Configuration)'=='ML_Mono'">
-        <TargetFramework>net35</TargetFramework>
+        <TargetFramework>netstandard2.1</TargetFramework>
         <OutputPath>..\Release\UnityExplorer.MelonLoader.Mono\</OutputPath>
         <DefineConstants>MONO,ML</DefineConstants>
         <AssemblyName>UnityExplorer.ML.Mono</AssemblyName>
@@ -52,21 +52,21 @@
     </PropertyGroup>
     <!-- BEPINEX 6 MONO -->
     <PropertyGroup Condition="'$(Configuration)'=='BIE6_Mono'">
-        <TargetFramework>net35</TargetFramework>
+        <TargetFramework>netstandard2.1</TargetFramework>
         <OutputPath>..\Release\UnityExplorer.BepInEx6.Mono\</OutputPath>
         <DefineConstants>MONO,BIE,BIE6</DefineConstants>
         <AssemblyName>UnityExplorer.BIE6.Mono</AssemblyName>
     </PropertyGroup>
     <!-- BEPINEX 5 MONO -->
     <PropertyGroup Condition="'$(Configuration)'=='BIE5_Mono'">
-        <TargetFramework>net35</TargetFramework>
+        <TargetFramework>netstandard2.1</TargetFramework>
         <OutputPath>..\Release\UnityExplorer.BepInEx5.Mono\</OutputPath>
         <DefineConstants>MONO,BIE,BIE5</DefineConstants>
         <AssemblyName>UnityExplorer.BIE5.Mono</AssemblyName>
     </PropertyGroup>
     <!-- STANDALONE Mono -->
     <PropertyGroup Condition="'$(Configuration)'=='STANDALONE_Mono'">
-        <TargetFramework>net35</TargetFramework>
+        <TargetFramework>netstandard2.1</TargetFramework>
         <OutputPath>..\Release\UnityExplorer.Standalone.Mono\</OutputPath>
         <DefineConstants>MONO,STANDALONE</DefineConstants>
         <AssemblyName>UnityExplorer.STANDALONE.Mono</AssemblyName>
@@ -90,12 +90,16 @@
         <PackageReference Include="UniverseLib.IL2CPP.Unhollower" Version="1.5.1" />
     </ItemGroup>
     <ItemGroup Condition="'$(Configuration)'=='BIE_Cpp_CoreCLR'">
-        <PackageReference Include="Il2CppInterop.Common" Version="1.4.0" />
-        <PackageReference Include="Il2CppInterop.Runtime" Version="1.4.0" />
+        <PackageReference Include="Il2CppInterop.Common" Version="1.4.5" />
+        <PackageReference Include="Il2CppInterop.Runtime" Version="1.4.5" />
     </ItemGroup>
     <!-- mono nuget -->
     <ItemGroup Condition="'$(Configuration)'=='BIE6_Mono' or '$(Configuration)'=='BIE5_Mono' or '$(Configuration)'=='ML_Mono' or '$(Configuration)'=='STANDALONE_Mono'">
-        <PackageReference Include="UniverseLib.Mono" Version="1.5.1" />
+        <PackageReference Include="kremnev8.UniverseLib.Mono" Version="2.0.2" />
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(Configuration)'=='BIE_Cpp_CoreCLR'">
+        <PackageReference Include="kremnev8.UniverseLib.IL2CPP.Interop" Version="2.0.2" />
     </ItemGroup>
 
     <!-- ~~~~~ ASSEMBLY REFERENCES ~~~~~ -->
@@ -105,13 +109,9 @@
             <HintPath>..\lib\net6\mcs.dll</HintPath>
             <Private>True</Private>
         </Reference>
-		<Reference Include="UniverseLib.IL2CPP.Interop">
-			<HintPath>..\lib\net6\UniverseLib.IL2CPP.Interop.dll</HintPath>
-			<Private>true</Private>
-		</Reference>
     </ItemGroup>
     <!-- net35 / net472 -->
-    <ItemGroup Condition="'$(TargetFramework)'=='net35' or '$(TargetFramework)'=='net472'">
+    <ItemGroup Condition="'$(TargetFramework)'=='net35' or '$(TargetFramework)'=='net472' or '$(TargetFramework)'=='netstandard2.1'">
         <Reference Include="mcs">
             <HintPath>..\lib\net35\mcs.dll</HintPath>
             <Private>True</Private>
@@ -164,6 +164,34 @@
     <ItemGroup Condition="'$(Configuration)'=='BIE6_Mono' or '$(Configuration)'=='BIE5_Mono' or '$(Configuration)'=='ML_Mono' or '$(Configuration)'=='STANDALONE_Mono'">
         <Reference Include="UnityEngine">
             <HintPath>..\lib\net35\UnityEngine.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
+        <Reference Include="UnityEngine.CoreModule">
+            <HintPath>..\lib\net35\UnityEngine.CoreModule_publicized.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
+        <Reference Include="UnityEngine.AssetBundleModule">
+            <HintPath>..\lib\net35\UnityEngine.AssetBundleModule_publicized.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
+        <Reference Include="UnityEngine.IMGUIModule">
+            <HintPath>..\lib\net35\UnityEngine.IMGUIModule_publicized.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
+        <Reference Include="UnityEngine.PhysicsModule">
+            <HintPath>..\lib\net35\UnityEngine.PhysicsModule_publicized.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
+        <Reference Include="UnityEngine.TextRenderingModule">
+            <HintPath>..\lib\net35\UnityEngine.TextRenderingModule_publicized.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
+        <Reference Include="UnityEngine.UIModule">
+            <HintPath>..\lib\net35\UnityEngine.UIModule.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
+        <Reference Include="UnityEngine.AudioModule">
+            <HintPath>..\lib\net35\UnityEngine.AudioModule.dll</HintPath>
             <Private>False</Private>
         </Reference>
         <Reference Include="UnityEngine.UI">
