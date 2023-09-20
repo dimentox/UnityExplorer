@@ -5,7 +5,7 @@
         <AppDesignerFolder>Properties</AppDesignerFolder>
         <RootNamespace>ECSExtension</RootNamespace>
         <AssemblyName>ECSExtension</AssemblyName>
-        <Configurations>BIE_Cpp_CoreCLR;BIE5_Mono</Configurations>
+        <Configurations>BIE_Cpp_CoreCLR;BIE5_Mono;BIE6_Mono</Configurations>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
         <GenerateDependencyFile>false</GenerateDependencyFile>
@@ -151,7 +151,7 @@
 
     </ItemGroup>
         
-    <ItemGroup Condition="'$(Configuration)'=='BIE5_Mono'">
+    <ItemGroup Condition="'$(Configuration)'=='BIE5_Mono' or '$(Configuration)'=='BIE6_Mono'">
         <Reference Include="mcs">
             <HintPath>..\lib\net35\mcs.dll</HintPath>
             <Private>True</Private>
@@ -258,6 +258,18 @@
             <Private>False</Private>
         </Reference>
 
+    </ItemGroup>
+ 
+    <!-- BepInEx 6 Mono -->
+    <ItemGroup Condition="'$(Configuration)'=='BIE6_Mono'">
+        <Reference Include="BepInEx">
+            <HintPath>..\lib\net35\BepInEx.Core.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
+        <Reference Include="BepInEx.Unity">
+            <HintPath>..\lib\net35\BepInEx.Unity.Mono.dll</HintPath>
+            <Private>False</Private>
+        </Reference>
     </ItemGroup>
 
     <ItemGroup>

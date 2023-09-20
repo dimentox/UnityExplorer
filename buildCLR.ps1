@@ -14,7 +14,7 @@ Remove-Item $Path/UnityExplorer.BIE.IL2CPP.CoreCLR.deps.json
 New-Item -Path "$Path" -Name "plugins" -ItemType "directory" -Force
 New-Item -Path "$Path" -Name "plugins/sinai-dev-UnityExplorer" -ItemType "directory" -Force
 Move-Item -Path $Path/UnityExplorer.BIE.IL2CPP.CoreCLR.dll -Destination $Path/plugins/sinai-dev-UnityExplorer -Force
-Move-Item -Path $Path/UniverseLib.IL2CPP.Interop.dll -Destination $Path/plugins/sinai-dev-UnityExplorer -Force
+Move-Item -Path $Path/UniverseLib.IL2CPP.dll -Destination $Path/plugins/sinai-dev-UnityExplorer -Force
 Move-Item -Path $Path/ECSExtension.dll -Destination $Path/plugins/sinai-dev-UnityExplorer -Force
 Move-Item -Path $Path/ECSExtension.pdb -Destination $Path/plugins/sinai-dev-UnityExplorer -Force
 

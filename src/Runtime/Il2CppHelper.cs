@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HarmonyLib;
 using UnityEngine;
 
 namespace UnityExplorer.Runtime
@@ -12,13 +13,20 @@ namespace UnityExplorer.Runtime
         {
             try
             {
-                Application.add_logMessageReceived(new Action<string, string, LogType>(Application_logMessageReceived));
+                if (typeof(Application).GetMethod("add_logMessageReceived", AccessTools.all) == null)
+                    throw new Exception("No method!");
+                SetupEventsInternal();
             }
             catch (Exception ex)
             {
                 ExplorerCore.LogWarning("Exception setting up Unity log listener, make sure Unity libraries have been unstripped!");
                 ExplorerCore.Log(ex);
             }
+        }
+
+        private void SetupEventsInternal()
+        {
+            Application.add_logMessageReceived(new Action<string, string, LogType>(Application_logMessageReceived));
         }
 
         private void Application_logMessageReceived(string condition, string stackTrace, LogType type)

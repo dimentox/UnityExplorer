@@ -136,7 +136,7 @@
         <Reference Include="BepInEx">
             <HintPath>..\lib\net35\BepInEx.dll</HintPath>
             <Private>False</Private>
-        </Reference>
+        </Reference> 
     </ItemGroup>
     <!-- BepInEx 6 Mono -->
     <ItemGroup Condition="'$(Configuration)'=='BIE6_Mono'">
@@ -145,7 +145,7 @@
             <Private>False</Private>
         </Reference>
         <Reference Include="BepInEx.Unity">
-            <HintPath>..\lib\net35\BepInEx.Unity.dll</HintPath>
+            <HintPath>..\lib\net35\BepInEx.Unity.Mono.dll</HintPath>
             <Private>False</Private>
         </Reference>
     </ItemGroup>
