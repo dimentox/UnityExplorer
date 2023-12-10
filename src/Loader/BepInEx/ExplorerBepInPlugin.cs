@@ -1,7 +1,7 @@
 ﻿#if BIE
 using BepInEx;
 using BepInEx.Logging;
-using BepInEx.Unity.Mono;
+
 using HarmonyLib;
 using UnityExplorer.Config;
 using UnityExplorer.Loader.BIE;
